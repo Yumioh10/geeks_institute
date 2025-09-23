@@ -1,0 +1,16 @@
+### Testing index
+GET http://127.0.0.1:5000
+
+###
+PUT http://127.0.0.1:5000/students/22 Content-Type: application/json
+
+{
+"age": 26, "name": "soufiane amabraa"
+}
+
+###
+POST http://127.0.0.1:5000/students Content-Type: application/json
+
+{
+"id": 18, "name": "Jake Doe", "email": "jake.doe@example.com", "age": 25, "gender": "male"
+}
