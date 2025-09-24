@@ -1,16 +1,38 @@
-### Testing index
+# test my api
+
+
+##### home page
 GET http://127.0.0.1:5000
 
-###
-PUT http://127.0.0.1:5000/students/22 Content-Type: application/json
+##### get all students
+GET http://127.0.0.1:5000/students?page=1&limit=2
+##### get student by id
+GET http://127.0.0.1:5000/students/6
+
+##### add a new student
+POST http://127.0.0.1:5000/students
+Content-Type: application/json
 
 {
-"age": 26, "name": "soufiane amabraa"
+    "name": "David geeks",
+    "email": "david.geeks@example.com",
+    "age": 25,
+    "gender": "male"
 }
 
-###
-POST http://127.0.0.1:5000/students Content-Type: application/json
+##### get student by id to verify addition
+GET http://127.0.0.1:5000/students/5
+
+##### update student by id
+PUT http://127.0.0.1:5000/students/5
+Content-Type: application/json
 
 {
-"id": 18, "name": "Jake Doe", "email": "jake.doe@example.com", "age": 25, "gender": "male"
+    "name": "Meriama geeks",
+    "email": "meriama.geeks@example.com",
+    "age": 21,
+    "gender": "female"
 }
+
+##### get student by id to verify update
+DELETE http://127.0.0.1:5000/students/6
