@@ -1,3 +1,4 @@
+###################################### Exercise 3 ######################################
 # 1. Dictionary creation "brand"
 brand = {
     'name': 'Zara',
@@ -12,7 +13,6 @@ brand = {
         'US': ['pink', 'green']
     }
 }
-
 # 2. Changing the number of stores to 2
 brand['number_stores'] = 2
 print(brand)
@@ -65,3 +65,15 @@ print(brand)
 # 13. Print the value of the key number_stores
 print(brand['number_stores'])
 print(brand.get("number_stores"))
+###################################### Exercise 4 ######################################
+# 1. create the function descrie_city
+def describe_city(city, country):
+    """The role of this function is to print city is in country"""
+    print(f"{city} is in {country}") # 2. the function use is to print {city} is in {country}
+
+# 3. Giving the parameter country a default value
+def describe_city(city, country='Morocco'):
+    print(f"{city} is in {country}")
+
+# 4. Calling the function
+describe_city("Rabat")

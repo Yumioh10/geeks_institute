@@ -1,3 +1,14 @@
+###################################### Exercise 1 ######################################
+# Define the lists
+keys = ['Ten', 'Twenty', 'Thirty']
+values = [10, 20, 30]
+
+# Convert lists into a dictionary using zip
+result = dict(zip(keys, values))
+
+# Print the result
+print(result)
+###################################### Exercise 2 ######################################
 # Define the family dictionary with their age
 family = {
    'rick': 43,
@@ -6,7 +17,6 @@ family = {
    'summer': 8
 }
 total_cost = 0
-
 # fonction to determine ticket price based on age 
 def get_ticket_price(age):
    if age < 3:
