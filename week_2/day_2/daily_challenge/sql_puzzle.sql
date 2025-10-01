@@ -1,4 +1,4 @@
--- Active: 1758778841543@@localhost@5432@SQL Puzzle
+-- Active: 1759060128087@@localhost@5432@SQL Puzzle@public
 
 CREATE TABLE FirstTab (
      id integer, 
