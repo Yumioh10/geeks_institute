@@ -1,0 +1,39 @@
+
+@url = http://127.0.0.1:5000
+
+### get all items
+GET {http://127.0.0.1:5000}/menu
+
+
+### Get menu item
+GET {http://127.0.0.1:5000}/menu/1
+
+
+### create item
+POST {{url}}/menu/add
+Content-Type: application/json
+
+{
+    "name": "Headphones",
+    "description": "Headphones for listening to music",
+    "price": 100,
+    "stock_quantity": 10,
+    "category": "Electronics",
+    "json_data": "{\"color\": \"black\", \"size\": \"medium\"}"
+}
+
+
+### update a product
+PUT {{url}}/products/4
+Content-Type: application/json
+
+{
+    "description": "Headphones for listening to music",
+    "price": 200,
+    "stock_quantity": 10,
+    "json_data": "{\"color\": \"White\", \"size\": \"large\"}"
+}
+
+
+### delete a product
+DELETE {{url}}/products/4

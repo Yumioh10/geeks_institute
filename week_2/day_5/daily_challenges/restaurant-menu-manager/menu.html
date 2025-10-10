@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Restaurant Menu Manager</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1, h2 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .form-container { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; }
+        .action-button { background-color: #4CAF50; color: white; padding: 5px 10px; text-decoration: none; border: none; cursor: pointer; }
+        .delete-button { background-color: #f44336; }
+    </style>
+</head>
+<body>
+    <h1>🍽️ Restaurant Menu Manager</h1>
+
+    <div class="form-container">
+        {% if update_item %}
+            <h2>✏️ Update Item (ID: {{ update_item[0] }})</h2>
+            <form method="POST" action="{{ url_for('update_item', item_id=update_item[0]) }}">
+                <input type="text" name="name" value="{{ update_item[1] }}" required>
+                <input type="number" step="0.01" name="price" value="{{ update_item[2] }}" required>
+                <button type="submit" class="action-button">Save Update</button>
+                <a href="{{ url_for('view_menu') }}" class="action-button delete-button">Cancel</a>
+            </form>
+        {% else %}
+            <h2>➕ Add New Item</h2>
+            <form method="POST" action="{{ url_for('add_item') }}">
+                <input type="text" name="name" placeholder="Item Name" required>
+                <input type="number" step="0.01" name="price" placeholder="Price (e.g., 9.99)" required>
+                <button type="submit" class="action-button">Add Item</button>
+            </form>
+        {% endif %}
+    </div>
+
+    <hr>
+    
+    <h2>📋 Menu Items</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item[0] }}</td> <td>{{ item[1] }}</td> <td>${{ "{:,.2f}".format(item[2]) }}</td> <td>
+                    <a href="{{ url_for('update_item', item_id=item[0]) }}" class="action-button">Update</a>
+                    
+                    <form method="POST" action="{{ url_for('delete_item', item_id=item[0]) }}" style="display:inline;">
+                        <button type="submit" class="action-button delete-button" onclick="return confirm('Are you sure you want to delete {{ item[1] }}?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4">The menu is empty. Add some items!</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
