@@ -25,37 +25,25 @@ console.log(newSentence);
                       // Daily challenge: Stars
 
 // --- Solution 1: Single Loop using String.prototype.repeat() ---
-function generatePatternSingleLoop(rows = 5) {
-    console.log("--- Single Loop Solution ---");
-    // The loop iterates once for each line/row we need to print.
-    for (let i = 1; i <= rows; i++) {
-        // In each iteration, we take the asterisk character and repeat it
-        // 'i' times (1 time for row 1, 2 times for row 2, etc.).
-        const line = "*".repeat(i);
-        console.log(line);
-    }
+const rows = 5;
+// The loop iterates once for each line/row we need to print.
+for (let i = 1; i <= rows; i++) {
+    const line = "*".repeat(i);
+    console.log(line);
 }
-
 generatePatternSingleLoop(5);
 
-// --- Solution 2: Two Nested For Loops ---
-function generatePatternNestedLoops(rows = 5) {
-    console.log("\n--- Nested Loops Solution ---");
-    let line = "";
+// --- Solution 2: Two Nested For Loops---
+const numRows = 5;
 
-    // OUTER LOOP: Controls the number of rows (i = 1 to 5)
-    for (let i = 1; i <= rows; i++) {
-        line = ""; // Reset the line string for the new row
+// OUTER LOOP: Controls the number of rows (i = 1 to 5)
+for (let i = 1; i <= numRows; i++) {
+    let line = ""; // Reset the line string for the new row
 
-        // INNER LOOP: Controls how many stars are added to the current line (j = 1 up to i)
-        for (let j = 1; j <= i; j++) {
-            // Add one star to the line string in each inner iteration
-            line += "*";
-        }
-
-        // After the inner loop finishes building the line, print the complete line
-        console.log(line);
+    // INNER LOOP: Controls how many stars are added to the current line (j = 1 up to i)
+    for (let j = 1; j <= i; j++) {
+        // Add one star to the line string in each inner iteration
+        line += "*";
     }
+    console.log(line);
 }
-
-generatePatternNestedLoops(5);
