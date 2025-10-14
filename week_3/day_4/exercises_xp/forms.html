@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Exercise 2: Work with Forms</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <style>
+         body {
+            font-family: 'Inter', sans-serif;
+         }
+      </style>
+   </head>
+   <body class="bg-gray-50 min-h-screen flex flex-col items-center justify-center p-4">
+      <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl transition-all duration-300 hover:shadow-3xl">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">User Information Form</h1>
+         <form id="myForm">
+            <!--First name input group-->
+               <label for="fname">First name:</label><br>
+               <input 
+                  type="text" 
+                  id="fname" 
+                  name="firstname"><br>
+            <!-- Last name input group-->
+               <label for="lname">Last name:</label><br>
+               <input 
+                  type="text" 
+                  id="lname" 
+                  name="lastname"><br><br>
+            <!-- Submit button-->
+               <input 
+                  type="submit" 
+                  value="Submit" 
+                  id="submit"
+                  class="w-full mt-6 bg-indigo-600 text-white font-semibold py-2 rounded-lg shadow-md hover:bg-indigo-700 transition duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+               >
+         </form>
+         <!-- Container for the output -->
+         <div class="mt-8 pt-4 border-t border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-800 mb-3">User Answer Output:</h2>
+            <ul class="usersAnswer list-none space-y-2" id="usersAnswerList">
+               <!-- List items will be appended here by the Javascript -->
+            </ul>
+            <p id="error-message" class="text-red-500 text-sm mt-2 hidden">Please fill out both the first name and last name fields.</p>
+         </div>
+         <!-- Exercice 3-->
+          <div id="sentence-container" class="mt-8 pt-6 w-full max-w-md bg-white p-8 rounded-xl shadow-lg border-gray-200 cursor-pointer hover:bg-indigo-50 transition duration-300">
+            <p id="sentence-paragraph" class="text-lg text-gray-700 text-center">
+               <strong>Hello</strong> I hope you are enjoying <strong>this</strong> class. At the
+               <strong>end</strong> you <strong>will</strong> be great Developers!
+               <strong>Enjoy</strong> the <strong>JavaScript </strong> lessons</p>
+            </p> 
+          </div>
+         <script>
+            let form = document.getElementById('myForm');
+            console.log('Form Element Retrieved:', form);
+            let fnameInput = document.getElementById('fname');
+            let lnameInput = document.getElementById('lname');
+            console.log('Input (fname) by ID:', fnameInput);
+            console.log('Input (lname) by ID:', lnameInput);
+            let firstnameByName = document.getElementsByName('firstname');
+            let lastnameByName = document.getElementsByName('lastname');
+            console.log('Input (firstname) by Name:', firstnameByName);
+            console.log('Input (lastname) by Name:', lastnameByName);
+            let usersAnswerList = document.getElementById('usersAnswerList');
+            let errorMessage = document.getElementById('error-message');
+            form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            errorMessage.classList.add('hidden');
+            usersAnswerList.innerHTML = ''; 
+            let firstNameValue = fnameInput.value.trim();
+            let lastNameValue = lnameInput.value.trim();
+            if (firstNameValue === '' || lastNameValue === '') {
+               errorMessage.classList.remove('hidden');
+               return; // Stop execution if fields are empty
+               }
+               console.log('4. Form Submitted Successfully with data:', { firstNameValue, lastNameValue });
+               let createListItem = (label, value) => {
+               let li = document.createElement('li');
+               li.textContent = `${label} of the user: ${value}`;
+               li.classList.add('text-gray-600', 'p-2', 'bg-indigo-50', 'rounded-md', 'shadow-sm', 'text-base', 'font-medium');
+               return li;
+               };
+               let firstNameLi = createListItem('First Name', firstNameValue);
+               let lastNameLi = createListItem('Last Name', lastNameValue);
+               usersAnswerList.appendChild(firstNameLi);
+               usersAnswerList.appendChild(lastNameLi);
+            });
+         </script> 
+         <ul class="usersAnswer"></ul>
+      </div>
+   </body>
+</html>
