@@ -22,7 +22,7 @@ const displayGroceries = () => {
 // 2. cloneGroceries function
 const cloneGroceries = () => {
     // a. Copy client to user
-    let user = client; // Copy by Value (for primitive types)
+    let user = client; // Copy by Value 
 
     // b. Change client
     client = "Betty";
@@ -34,14 +34,14 @@ const cloneGroceries = () => {
     // --- Analysis of client/user change ---
     /*
     No, the modification in 'client' is NOT seen in 'user'.
-    This is because 'client' is a **primitive type** (string).
+    This is because 'client' is a Copy by Value (string).
     When you assign 'client' to 'user' ($let user = client$), the **value** ("John") is copied
     to 'user'. 'client' and 'user' now hold separate values in memory. Changing 'client'
     only affects that specific variable's value. This is **Pass by Value**.
     */
 
     // c. Copy groceries to shopping
-    let shopping = groceries; // Copy by Reference (for non-primitive types/objects)
+    let shopping = groceries; // Copy by Reference 
 
     // d. Change totalPrice
     shopping.totalPrice = "35$";
@@ -53,7 +53,7 @@ const cloneGroceries = () => {
     // --- Analysis of totalPrice change ---
     /*
     Yes, the modification is seen in the 'shopping' object (and also in the original 'groceries' object).
-    This is because 'groceries' is a **non-primitive type** (object).
+    This is because 'groceries' is a Copy by Reference (object).
     When you assign 'groceries' to 'shopping' ($let shopping = groceries$), they both point to the
     **same location in memory** where the object resides. They share the same reference.
     Changing a property in 'shopping' modifies the object at that shared memory location,
