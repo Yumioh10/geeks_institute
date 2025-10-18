@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🤖 Robo-Friends Search</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font import for a 'Robotic' feel (Example using a custom Google Font) 
+           For cdnfonts/dafont, you would typically download and host the font 
+           or use their provided linking instructions. */
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&display=swap');
+        
+        body {
+            /* Using a dark, tech-inspired background color/gradient */
+            background-color: #1a202c; /* A dark blue-gray */
+            background-image: url('https://www.transparenttextures.com/patterns/dark-mosaic.png');
+            font-family: 'Chakra Petch', sans-serif;
+            color: #e2e8f0; /* Light text color */
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <header class="text-center py-8">
+        <h1 class="text-6xl font-bold text-teal-400 tracking-wider">
+            <span class="text-pink-500">ROBO</span>FRIENDS
+        </h1>
+        <div class="mt-6">
+            <input type="text" id="searchInput" placeholder="Search robots by name..." 
+                   class="p-3 w-3/4 max-w-md border-4 border-teal-500 rounded-lg 
+                          bg-gray-800 text-lg text-white placeholder-gray-400 
+                          focus:outline-none focus:border-pink-500 transition duration-300 shadow-lg">
+        </div>
+    </header>
+
+    <main class="p-8">
+        <section id="robotContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 justify-items-center">
+            </section>
+        <p id="noResults" class="hidden text-center text-2xl text-red-400 mt-10">
+            No Robo-Friends found! Try a different name.
+        </p>
+    </main>
+
+    <script>
+        // ASSETS: The initial array of robot objects
+        const robots = [
+            { id: 1, name: 'Leanne Graham', username: 'Bret', email: 'Sincere@april.biz', image: 'https://robohash.org/1?200x200' },
+            { id: 2, name: 'Ervin Howell', username: 'Antonette', email: 'Shanna@melissa.tv', image: 'https://robohash.org/2?200x200' },
+            { id: 3, name: 'Clementine Bauch', username: 'Samantha', email: 'Nathan@yesenia.net', image: 'https://robohash.org/3?200x200' },
+            { id: 4, name: 'Patricia Lebsack', username: 'Karianne', email: 'Julianne.OConner@kory.org', image: 'https://robohash.org/4?200x200' },
+            { id: 5, name: 'Chelsey Dietrich', username: 'Kamren', email: 'Lucio_Hettinger@annie.ca', image: 'https://robohash.org/5?200x200' },
+            { id: 6, name: 'Mrs. Dennis Schulist', username: 'Leopoldo_Corkery', email: 'Karley_Dach@jasper.info', image: 'https://robohash.org/6?200x200' },
+            { id: 7, name: 'Kurtis Weissnat', username: 'Elwyn.Skiles', email: 'Telly.Hoeger@billy.biz', image: 'https://robohash.org/7?200x200' },
+            { id: 8, name: 'Nicholas Runolfsdottir V', username: 'Maxime_Nienow', email: 'Sherwood@rosamond.me', image: 'https://robohash.org/8?200x200' },
+            { id: 9, name: 'Glenna Reichert', username: 'Delphine', email: 'Chaim_McDermott@dana.io', image:'https://robohash.org/9?200x200' },
+            { id: 10, name: 'Clementina DuBuque', username: 'Moriah.Stanton', email: 'Rey.Padberg@karina.biz', image:'https://robohash.org/10?200x200' }
+        ];
+
+        // 1. Get DOM elements
+        const robotContainer = document.getElementById('robotContainer');
+        const searchInput = document.getElementById('searchInput');
+        const noResultsMessage = document.getElementById('noResults');
+
+        /**
+         * Creates the HTML structure for a single robot card.
+         * @param {object} robot - The robot data object.
+         * @returns {string} The HTML string for the card.
+         */
+        const createRobotCard = (robot) => {
+            // Tailwind classes for a stylish, futuristic card
+            return `
+                <div class="bg-gray-700 rounded-xl p-6 w-64 shadow-2xl hover:shadow-teal-500/50 
+                             transition duration-500 transform hover:scale-105 border-b-4 border-teal-500">
+                    <img src="${robot.image}" alt="Robot ${robot.id}" 
+                         class="mx-auto rounded-full w-32 h-32 object-cover border-4 border-pink-500 mb-4">
+                    <div class="text-center">
+                        <h2 class="text-2xl font-bold text-teal-400 mb-1 truncate">${robot.name}</h2>
+                        <p class="text-sm text-pink-300 italic mb-2">@${robot.username}</p>
+                        <p class="text-xs text-gray-300 break-words">${robot.email}</p>
+                    </div>
+                </div>
+            `;
+        };
+
+        /**
+         * Renders the robot cards to the DOM.
+         * @param {array} robotsArray - The array of robot objects to display.
+         */
+        const renderRobots = (robotsArray) => {
+            // Clear previous cards
+            robotContainer.innerHTML = '';
+
+            if (robotsArray.length === 0) {
+                noResultsMessage.classList.remove('hidden');
+            } else {
+                noResultsMessage.classList.add('hidden');
+                
+                // Generate HTML for all cards and insert into the container
+                const cardsHTML = robotsArray.map(createRobotCard).join('');
+                robotContainer.innerHTML = cardsHTML;
+            }
+        };
+
+        /**
+         * Handles the filtering logic based on the search input.
+         */
+        const filterRobots = (event) => {
+            // Get the search term, convert to lowercase, and trim whitespace
+            const searchTerm = event.target.value.toLowerCase().trim();
+
+            // Filter the original robots array
+            const filteredRobots = robots.filter(robot => {
+                // Check if the robot's name (case-insensitive) contains the search term
+                return robot.name.toLowerCase().includes(searchTerm);
+            });
+
+            // Re-render the filtered array of robots
+            renderRobots(filteredRobots);
+        };
+
+        // Initialize: Display all robots when the page loads (PART I)
+        renderRobots(robots);
+
+        // PART II: Add the event listener to the search input for real-time filtering
+        // Using 'input' event for immediate response
+        searchInput.addEventListener('input', filterRobots);
+
+    </script>
+</body>
+</html>
