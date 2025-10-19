@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giphy Randomizer Challenge</title>
+    <style>
+        /* Optional basic styling for better presentation */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #gif-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .gif-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .gif-item img {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .delete-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        #delete-all-btn {
+            margin-top: 10px;
+            background-color: #333;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Giphy Random GIF Fetcher</h1>
+    
+    <form id="gif-form">
+        <input type="text" id="category-input" placeholder="Enter GIF category (e.g., sun)" required>
+        <button type="submit">Fetch Random GIF</button>
+    </form>
+
+    <button id="delete-all-btn">DELETE ALL GIFs</button>
+
+    <div id="gif-container">
+        </div>
+
+    <script src="gifs.js"></script>
+</body>
+</html>
