@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giphy API Fetch</title>
+    <!-- Load Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font for a clean look */
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-lg bg-white p-8 rounded-xl shadow-2xl space-y-6">
+        <h1 class="text-3xl font-extrabold text-indigo-700 text-center">Giphy API Fetch Exercise 2</h1>
+        <p class="text-gray-600 text-center">Click the button below to retrieve **10 GIFs about "sun"**, starting from the 2nd result. The resulting JavaScript object will be logged in your browser's console.</p>
+
+        <button id="fetchButton" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition duration-150 ease-in-out shadow-lg transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50">
+            Fetch New GIF Data
+        </button>
+
+        <!-- Message Box for Status -->
+        <div id="statusMessage" class="p-3 text-sm rounded-lg transition-all duration-300 opacity-0 h-0 overflow-hidden"></div>
+    </div>
+
+    <script>
+        // Set up Firebase variables (required for the environment, though not used for this exercise)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+        // The provided GIPHY API KEY (from Exercise 1)
+        const GIPHY_API_KEY = 'hpvZycW22qCjn5cRM1xtWB8NKq4dQ2My';
+        
+        // New parameters for Exercise 2:
+        const QUERY_TERM = 'sun';
+        const LIMIT = 10;
+        const OFFSET = 2; // Starting position of results is 2
+
+        // Construct the new Giphy API URL with the required parameters
+        const GIPHY_API_URL = `https://api.giphy.com/v1/gifs/search?q=${QUERY_TERM}&limit=${LIMIT}&offset=${OFFSET}&api_key=${GIPHY_API_KEY}`;
+
+        // Get elements
+        const fetchButton = document.getElementById('fetchButton');
+        const statusMessage = document.getElementById('statusMessage');
+
+        /**
+         * Clears the status message box.
+         */
+        function clearStatus() {
+            statusMessage.classList.remove('bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+            statusMessage.classList.add('opacity-0', 'h-0');
+            statusMessage.textContent = '';
+        }
+
+        /**
+         * Displays a formatted status message to the user.
+         * @param {string} message - The text content of the message.
+         * @param {'success'|'error'} type - The type of message to determine styling.
+         */
+        function displayStatus(message, type) {
+            clearStatus();
+            // Allow time for the clear transition before showing new message
+            setTimeout(() => {
+                statusMessage.textContent = message;
+                statusMessage.classList.remove('opacity-0', 'h-0');
+                statusMessage.classList.add('p-3', 'h-auto');
+
+                if (type === 'success') {
+                    statusMessage.classList.add('bg-green-100', 'text-green-800');
+                } else {
+                    statusMessage.classList.add('bg-red-100', 'text-red-800');
+                }
+            }, 50);
+        }
+
+        /**
+         * Fetches data from the Giphy API using async/await and handles errors.
+         */
+        async function fetchGifs() {
+            // Disable button and update UI while fetching
+            fetchButton.disabled = true;
+            fetchButton.textContent = 'Fetching...';
+            clearStatus();
+            
+            try {
+                // 1. Make the GET request using fetch() to the new URL
+                console.log(`%cAttempting to fetch from: ${GIPHY_API_URL}`, 'color: blue;');
+                const response = await fetch(GIPHY_API_URL);
+
+                // 2. Check the status of the Response
+                if (!response.ok) {
+                    // Throw an error if the HTTP status code is not 200-299 (e.g., 404, 500)
+                    throw new Error(`HTTP error! Status: ${response.status} (${response.statusText})`);
+                }
+
+                // 3. Convert the response stream to a Javascript Object (JSON)
+                const data = await response.json();
+
+                // 4. Console.log the Javascript Object
+                console.groupCollapsed('%cGiphy API Data Retrieved Successfully (Exercise 2: sun, limit=10, offset=2)', 'color: green; font-weight: bold;');
+                console.log('The complete JavaScript Object:', data);
+                console.log('Total GIFs Returned (Limit):', data.data.length); // Should be 10
+                console.log('Starting Position (Offset):', data.pagination.offset); // Should be 2
+                
+                // Example of checking the first GIF
+                if (data.data.length > 0) {
+                    console.log('First GIF Title in this batch:', data.data[0].title || 'No Title Available');
+                }
+                
+                console.groupEnd();
+                
+                // Show success message on the UI
+                displayStatus(`Successfully fetched ${data.data.length} 'sun' GIFs! Check the console. Offset is ${data.pagination.offset}.`, 'success');
+
+            } catch (error) {
+                // 5. Catch any occurring network or parsing errors
+                console.error('An error occurred during the Giphy API request:', error);
+                // Show error message on the UI
+                displayStatus(`Fetch Error: ${error.message}. Check console for details.`, 'error');
+            } finally {
+                // Re-enable button regardless of success or failure
+                fetchButton.disabled = false;
+                fetchButton.textContent = 'Fetch New GIF Data';
+            }
+        }
+
+        // Attach the function to the button click event
+        fetchButton.addEventListener('click', fetchGifs);
+
+        // Note: Removed the auto-run from window.onload to keep it a button exercise.
+
+    </script>
+</body>
+</html>

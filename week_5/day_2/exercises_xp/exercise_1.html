@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giphy API Fetch</title>
+    <!-- Load Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font for a clean look */
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-lg bg-white p-8 rounded-xl shadow-2xl space-y-6">
+        <h1 class="text-3xl font-extrabold text-indigo-700 text-center">Giphy API Fetch Exercise</h1>
+        <p class="text-gray-600 text-center">Click the button below to retrieve "hilarious" GIF data from the Giphy API. The resulting JavaScript object will be logged in your browser's console.</p>
+
+        <button id="fetchButton" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg transition duration-150 ease-in-out shadow-lg transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50">
+            Fetch GIF Data
+        </button>
+
+        <!-- Message Box for Status -->
+        <div id="statusMessage" class="p-3 text-sm rounded-lg transition-all duration-300 opacity-0 h-0 overflow-hidden"></div>
+    </div>
+
+    <script>
+        // Set up Firebase variables (required for the environment, though not used for this exercise)
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+        // The provided Giphy API URL
+        const GIPHY_API_URL = 'https://api.giphy.com/v1/gifs/search?q=hilarious&rating=g&api_key=hpvZycW22qCjn5cRM1xtWB8NKq4dQ2My';
+
+        // Get elements
+        const fetchButton = document.getElementById('fetchButton');
+        const statusMessage = document.getElementById('statusMessage');
+
+        /**
+         * Clears the status message box.
+         */
+        function clearStatus() {
+            statusMessage.classList.remove('bg-green-100', 'text-green-800', 'bg-red-100', 'text-red-800');
+            statusMessage.classList.add('opacity-0', 'h-0');
+            statusMessage.textContent = '';
+        }
+
+        /**
+         * Displays a formatted status message to the user.
+         * @param {string} message - The text content of the message.
+         * @param {'success'|'error'} type - The type of message to determine styling.
+         */
+        function displayStatus(message, type) {
+            clearStatus();
+            // Allow time for the clear transition before showing new message
+            setTimeout(() => {
+                statusMessage.textContent = message;
+                statusMessage.classList.remove('opacity-0', 'h-0');
+                statusMessage.classList.add('p-3', 'h-auto');
+
+                if (type === 'success') {
+                    statusMessage.classList.add('bg-green-100', 'text-green-800');
+                } else {
+                    statusMessage.classList.add('bg-red-100', 'text-red-800');
+                }
+            }, 50);
+        }
+
+        /**
+         * Fetches data from the Giphy API using async/await and handles errors.
+         */
+        async function fetchGifs() {
+            // Disable button and update UI while fetching
+            fetchButton.disabled = true;
+            fetchButton.textContent = 'Fetching...';
+            clearStatus();
+            
+            try {
+                // 1. Make the GET request using fetch()
+                const response = await fetch(GIPHY_API_URL);
+
+                // 2. Check the status of the Response
+                if (!response.ok) {
+                    // Throw an error if the HTTP status code is not 200-299 (e.g., 404, 500)
+                    throw new Error(`HTTP error! Status: ${response.status} (${response.statusText})`);
+                }
+
+                // 3. Convert the response stream to a Javascript Object (JSON)
+                const data = await response.json();
+
+                // 4. Console.log the Javascript Object
+                console.groupCollapsed('%cGiphy API Data Retrieved Successfully', 'color: green; font-weight: bold;');
+                console.log('The complete JavaScript Object:', data);
+                console.log('Total GIFs Found:', data.pagination.total_count);
+                console.log('First GIF Title:', data.data[0].title);
+                console.groupEnd();
+                
+                // Show success message on the UI
+                displayStatus('Data retrieved successfully! Check your browser console for the full object.', 'success');
+
+            } catch (error) {
+                // 5. Catch any occurring network or parsing errors
+                console.error('An error occurred during the Giphy API request:', error);
+                // Show error message on the UI
+                displayStatus(`Fetch Error: ${error.message}. Check console for details.`, 'error');
+            } finally {
+                // Re-enable button regardless of success or failure
+                fetchButton.disabled = false;
+                fetchButton.textContent = 'Fetch GIF Data';
+            }
+        }
+
+        // Attach the function to the button click event
+        fetchButton.addEventListener('click', fetchGifs);
+
+        // Optional: Run the fetch operation automatically when the page loads
+        // window.onload = fetchGifs; 
+
+    </script>
+</body>
+</html>
