@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen p-4">
+    <div class="converter-container bg-white p-8 rounded-xl shadow-2xl w-full max-w-md text-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">💰 Currency Converter</h1>
+        
+        <div class="input-group mb-4">
+            <label for="amount" class="block mb-2 font-semibold text-gray-700 text-left">Amount:</label>
+            <input 
+                type="number" 
+                id="amount" 
+                value="1.00" 
+                min="0.01" 
+                class="w-full p-3 border border-gray-300 rounded-lg text-lg focus:ring-blue-500 focus:border-blue-500"
+            >
+        </div>
+
+        <div class="currency-selectors flex justify-between items-end mb-6 space-x-2">
+            
+            <div class="selector-group flex-1">
+                <label for="from-currency" class="block mb-2 font-semibold text-gray-700 text-left">From:</label>
+                <select id="from-currency" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-lg"></select>
+            </div>
+            
+            <button 
+                id="switch-btn" 
+                class="p-2 bg-gray-200 border border-gray-300 rounded-full text-xl h-10 w-10 flex items-center justify-center transition duration-300 hover:bg-gray-300"
+            >
+                🔄
+            </button>
+            
+            <div class="selector-group flex-1">
+                <label for="to-currency" class="block mb-2 font-semibold text-gray-700 text-left">To:</label>
+                <select id="to-currency" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-lg"></select>
+            </div>
+        </div>
+
+        <button 
+            id="convert-btn" 
+            class="w-full p-3 bg-blue-600 text-white font-semibold rounded-lg text-xl cursor-pointer transition duration-300 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300"
+        >
+            Convert
+        </button>
+
+        <div id="result-output" class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-lg text-gray-700 text-left">
+            <p>Exchange rate and converted amount will appear here.</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script> </body>
+</html>
