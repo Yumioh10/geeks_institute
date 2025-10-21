@@ -1,7 +1,7 @@
 body {
     background-image: url('https://i.giphy.com/media/TxVVB6PfWMjE4/200.webp'); /* Starry background image */
     background-color: black;
-    color: yellow;
+    color: gold;
     font-family: 'Helvetica Neue';
     text-align: center;
     align-items: center;
@@ -13,7 +13,7 @@ body {
 }
 
 .info-container {
-    border: 3px solid yellow;
+    border: 3px solid gold;
 	 border-radius: 15px;
 	 width: 600px;
 	 height: 250px;
@@ -24,15 +24,31 @@ body {
 .logo {
 	font-family: Death Star, serif;
     font-size: 120px;
+    color: transparent;
+    -webkit-text-stroke: 3px gold;
+    position: relative;
 	width: 456px;
 	height: 276px;
 	margin:  0 auto;
 	margin-top: 20px;
 }
-
+.logo::before{
+    content: STAR WARS;
+    position: absolute;
+    width: 0%;
+    height: 100%;
+    overflow: hidden;
+    color: gold;
+    border-right: 8px solid gold;
+    transition: ls ease-in-out;
+}
+.logo:hover::before{
+    width: 100%;
+    filter: drop-shadow(0 0 25px gold);
+}
 .card {
     background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
-    border: 3px solid #ffe81f;
+    border: 3px solid gold;
     border-radius: 5px;
     padding: 30px;
     width: 350px;
@@ -98,7 +114,7 @@ p{
 
 #button {
     margin-top: 20px;
-    border: 3px solid yellow;
+    border: 3px solid gold;
     border-radius: 10px;
     width: 180px;
     height: 40px;
