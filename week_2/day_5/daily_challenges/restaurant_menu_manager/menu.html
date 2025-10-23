@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Manager - Local Storage</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Styles for Inter Font and Shadow */
+        body { font-family: 'Inter', sans-serif; }
+        .card-shadow { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+    </style>
+    <script>
+        // --- Database Simulation (using localStorage) ---
+        const DB_KEY = 'restaurantMenu';
+        let nextId = 1; // Global variable for the next ID
+
+        // Initialize or retrieve the menu from localStorage
+        function loadMenuFromStorage() {
+            const storedData = localStorage.getItem(DB_KEY);
+            // Default data uses the SQL example items for initialization
+            let menu = storedData ? JSON.parse(storedData) : [
+                { item_id: 1, item_name: "Burger", item_price: 35.00 },
+                { item_id: 2, item_name: "Veggie Burger", item_price: 37.00 },
+                { item_id: 3, item_name: "Beef Stew", item_price: 40.00 }
+            ];
+            
+            // Ensure nextId is correctly calculated from existing max ID
+            if (menu.length > 0) {
+                // Find the maximum ID in the current list
+                const maxId = menu.reduce((max, item) => (item.item_id > max ? item.item_id : max), 0);
+                nextId = maxId + 1;
+            } else {
+                nextId = 1;
+            }
+
+            return menu;
+        }
+
+        // Save menu to localStorage
+        function saveMenuToStorage(menu) {
+            localStorage.setItem(DB_KEY, JSON.stringify(menu));
+        }
+
+        // --- CRUD Logic ---
+
+        function getMenu() {
+            return loadMenuFromStorage();
+        }
+
+        function addItem(item_name, item_price) {
+            const menu = getMenu();
+            const newItem = {
+                item_id: nextId++, // Use current ID, then increment for the next item
+                item_name: item_name,
+                item_price: parseFloat(item_price).toFixed(2)
+            };
+            menu.push(newItem);
+            saveMenuToStorage(menu);
+            displayMessage(`Item "${item_name}" added!`, 'success');
+            renderMenuView();
+        }
+
+        function deleteItem(item_id) {
+            item_id = parseInt(item_id);
+            // NOTE: Using a simple JS confirmation box
+            if (!confirm(`Are you sure you want to delete item ID ${item_id}?`)) return; 
+
+            let menu = getMenu();
+            const initialLength = menu.length;
+            menu = menu.filter(item => item.item_id !== item_id);
+
+            if (menu.length < initialLength) {
+                saveMenuToStorage(menu);
+                displayMessage(`Item ID ${item_id} deleted successfully.`, 'success');
+            } else {
+                displayMessage(`Item ID ${item_id} not found.`, 'error');
+            }
+            renderMenuView();
+        }
+
+        function updateItem(item_id, item_name, item_price) {
+            item_id = parseInt(item_id);
+            let menu = getMenu();
+            const index = menu.findIndex(item => item.item_id === item_id);
+
+            if (index !== -1) {
+                menu[index].item_name = item_name;
+                menu[index].item_price = parseFloat(item_price).toFixed(2);
+                saveMenuToStorage(menu);
+                displayMessage(`Item ID ${item_id} updated to "${item_name}"`, 'success');
+                renderMenuView();
+            } else {
+                displayMessage(`Error: Item ID ${item_id} not found.`, 'error');
+                renderMenuView();
+            }
+        }
+
+        // --- UI Rendering and Navigation ---
+
+        function displayMessage(message, type) {
+            const container = document.getElementById('message-container');
+            const color = type === 'success' ? 'bg-green-100 border-green-400 text-green-700' : 'bg-red-100 border-red-400 text-red-700';
+            container.innerHTML = `
+                <div role="alert" class="border ${color} px-4 py-3 rounded relative mb-4 transition duration-300 ease-in-out">
+                    <span class="block sm:inline">${message}</span>
+                </div>
+            `;
+            // Clear message after 4 seconds
+            setTimeout(() => { container.innerHTML = ''; }, 4000);
+        }
+
+        function setView(viewId) {
+            document.getElementById('menu-view').classList.add('hidden');
+            document.getElementById('add-view').classList.add('hidden');
+            document.getElementById('update-view').classList.add('hidden');
+            document.getElementById(viewId).classList.remove('hidden');
+        }
+
+        // Renders the main menu list
+        function renderMenuView() {
+            setView('menu-view');
+            const menu = getMenu();
+            const tableBody = document.getElementById('menu-table-body');
+            tableBody.innerHTML = ''; // Clear existing table rows
+
+            if (menu.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-gray-500">The menu is empty. Add your first item!</td></tr>';
+                return;
+            }
+
+            menu.forEach(item => {
+                const row = document.createElement('tr');
+                row.className = 'hover:bg-indigo-50 transition duration-150';
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.item_id}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${item.item_name}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">$${item.item_price}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                        <!-- Update Button -->
+                        <button onclick="renderUpdateView(${item.item_id})" class="text-indigo-600 hover:text-indigo-900 transition duration-150 p-1 rounded-md">
+                            Edit
+                        </button>
+                        <!-- Delete Button -->
+                        <button onclick="deleteItem(${item.item_id})" class="text-red-600 hover:text-red-900 transition duration-150 p-1 rounded-md">
+                            Delete
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Renders the Add form
+        function renderAddView() {
+            setView('add-view');
+            const form = document.getElementById('add-form');
+            
+            form.onsubmit = function(event) {
+                event.preventDefault();
+                
+                // Get values and trim whitespace
+                const name = document.getElementById('add-name').value.trim();
+                const priceValue = document.getElementById('add-price').value.trim();
+
+                // Validation check
+                if (name.length > 0 && priceValue && !isNaN(priceValue) && isFinite(priceValue)) {
+                    addItem(name, priceValue);
+                    form.reset(); 
+                } else {
+                    displayMessage('Please ensure the item name is filled and the price is a valid number.', 'error');
+                }
+            };
+        }
+
+        // Renders the Update form, pre-filled
+        function renderUpdateView(item_id) {
+            setView('update-view');
+            const menu = getMenu();
+            const item = menu.find(i => i.item_id === item_id);
+
+            if (!item) {
+                displayMessage(`Item ID ${item_id} not found for updating.`, 'error');
+                renderMenuView();
+                return;
+            }
+
+            document.getElementById('update-id').value = item.item_id;
+            document.getElementById('update-name').value = item.item_name;
+            document.getElementById('update-price').value = item.item_price;
+            document.getElementById('update-heading').textContent = `Update Item (ID: ${item.item_id})`;
+
+            const form = document.getElementById('update-form');
+            form.onsubmit = function(event) {
+                event.preventDefault();
+                
+                const newName = document.getElementById('update-name').value.trim();
+                const newPriceValue = document.getElementById('update-price').value.trim();
+
+                // Validation check for update
+                if (newName.length > 0 && newPriceValue && !isNaN(newPriceValue) && isFinite(newPriceValue)) {
+                    updateItem(item_id, newName, newPriceValue);
+                } else {
+                    displayMessage('Please enter a valid name and price.', 'error');
+                }
+            };
+        }
+
+        // Initialize the app when the page loads
+        window.onload = function() {
+            renderMenuView();
+        };
+
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen p-4 sm:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-gray-800 tracking-tight">
+                Restaurant Menu Manager
+            </h1>
+            <p class="text-lg text-indigo-600 mt-2">Local Storage Persistence Demo</p>
+        </header>
+
+        <!-- Flash Messages Container -->
+        <div id="message-container"></div>
+
+        <div class="bg-white p-6 sm:p-8 rounded-2xl card-shadow">
+            
+            <!-- VIEW MENU Section (Default) -->
+            <div id="menu-view">
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6 border-b pb-4">
+                    <h2 class="text-3xl font-semibold text-gray-700 mb-4 sm:mb-0">Current Menu Items</h2>
+                    <button onclick="renderAddView()" class="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-xl shadow-lg transition duration-200 transform hover:scale-105">
+                        <span class="text-xl">+</span> Add New Item
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tl-lg">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider rounded-tr-lg">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="menu-table-body" class="bg-white divide-y divide-gray-200">
+                            <!-- Menu rows will be injected here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ADD ITEM Section -->
+            <div id="add-view" class="hidden">
+                <h2 class="text-3xl font-semibold text-gray-700 mb-6 border-b pb-4">Create New Item</h2>
+                <form id="add-form" class="space-y-6">
+                    <div>
+                        <label for="add-name" class="block text-sm font-medium text-gray-700">Item Name</label>
+                        <input type="text" id="add-name" required placeholder="e.g., Filet Mignon"
+                               class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                    </div>
+                    <div>
+                        <label for="add-price" class="block text-sm font-medium text-gray-700">Price ($)</label>
+                        <input type="number" step="0.01" id="add-price" required placeholder="e.g., 35.99"
+                               class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                    </div>
+                    <div class="flex space-x-4 pt-4">
+                        <button type="submit" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition duration-200 transform hover:scale-[1.02]">
+                            Save Item
+                        </button>
+                        <button type="button" onclick="renderMenuView()" class="flex-1 bg-gray-400 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-xl shadow-md transition duration-200 transform hover:scale-[1.02]">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- UPDATE ITEM Section -->
+            <div id="update-view" class="hidden">
+                <h2 id="update-heading" class="text-3xl font-semibold text-gray-700 mb-6 border-b pb-4">Update Item</h2>
+                <form id="update-form" class="space-y-6">
+                    <input type="hidden" id="update-id">
+                    <div>
+                        <label for="update-name" class="block text-sm font-medium text-gray-700">Item Name</label>
+                        <input type="text" id="update-name" required
+                               class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                    </div>
+                    <div>
+                        <label for="update-price" class="block text-sm font-medium text-gray-700">Price ($)</label>
+                        <input type="number" step="0.01" id="update-price" required
+                               class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150">
+                    </div>
+                    <div class="flex space-x-4 pt-4">
+                        <button type="submit" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl shadow-md transition duration-200 transform hover:scale-[1.02]">
+                            Apply Changes
+                        </button>
+                        <button type="button" onclick="renderMenuView()" class="flex-1 bg-gray-400 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-xl shadow-md transition duration-200 transform hover:scale-[1.02]">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

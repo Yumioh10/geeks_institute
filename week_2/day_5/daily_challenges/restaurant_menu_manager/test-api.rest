@@ -1,0 +1,32 @@
+@url = http://localhost:5000/
+
+### get all menu
+GET {{url}}/menu
+
+
+### get an item by id
+GET {{url}}/menu/1
+
+
+### create an item
+POST {{url}}/menu
+Content-Type: application/json
+
+{
+    "item_name": "Salad",
+    "item_price": 30.00
+}
+
+
+### update an item
+PUT {{url}}/menu/2
+Content-Type: application/json
+
+{
+    "item_name": "Burger",
+    "item_price": 40.00
+}
+
+
+### delete an item
+DELETE {{url}}/menu/5
