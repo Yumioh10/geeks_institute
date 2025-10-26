@@ -1,4 +1,4 @@
-/* Exercise 1*/
+/* Exercise 1: Multiple Exports and Import using CommonJS syntax*/
 /* In shop.js, require the product objects from the products.js module.*/
 
 const products = require('./products');

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Social Post Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Optional: Tailwind configuration if needed, but the defaults are fine for this project
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-blue': '#3498db',
+                        'secondary-green': '#2ecc71',
+                        'warning-orange': '#e67e22',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 flex justify-center p-8 min-h-screen">
+    <div class="container bg-white p-8 md:p-10 rounded-xl shadow-2xl w-full max-w-4xl">
+        <h1 class="text-4xl font-extrabold text-primary-blue text-center mb-8">
+            ✨ AI Content Agent: Post Generator
+        </h1>
+
+        <form id="post-generator-form" class="space-y-6">
+            <div>
+                <label for="transcript" class="block mb-2 text-lg font-semibold text-gray-700">
+                    Raw Transcript / Notes:
+                </label>
+                <textarea id="transcript" name="transcript" 
+                          placeholder="Paste your meeting notes, interview transcript, or raw ideas here..."
+                          class="w-full p-4 border border-gray-300 rounded-lg focus:ring-primary-blue focus:border-primary-blue transition duration-150 ease-in-out"
+                          rows="6" required></textarea>
+            </div>
+
+            <div>
+                <label for="platform" class="block mb-2 text-lg font-semibold text-gray-700">
+                    Target Social Media Platform:
+                </label>
+                <select id="platform" name="platform"
+                        class="w-full p-4 border border-gray-300 rounded-lg bg-white focus:ring-primary-blue focus:border-primary-blue transition duration-150 ease-in-out">
+                    <option value="twitter">X (Concise, Punchy)</option>
+                    <option value="linkedin">LinkedIn (Professional, Value-Driven)</option>
+                    <option value="instagram">Instagram (Caption) (Visual, Emojis)</option>
+                    <option value="generic">Generic/Blog Snippet (Flexible Format)</option>
+                </select>
+            </div>
+
+            <button type="submit"
+                    class="w-full py-3 bg-primary-blue text-white font-bold text-xl rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out shadow-lg transform hover:scale-[1.01]">
+                Generate Engaging Post
+            </button>
+        </form>
+
+        <div id="loading" class="text-center mt-6 text-warning-orange font-medium text-lg hidden">
+            ... Generating content with 10 years of AI expertise ...
+        </div>
+
+        <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4 border-b pb-2">Generated Post:</h2>
+        
+        <div id="output-area" 
+             class="min-h-[150px] p-6 bg-gray-50 border-2 border-secondary-green rounded-lg text-gray-800 whitespace-pre-wrap leading-relaxed shadow-inner">
+            Your AI-generated, high-quality post will appear here.
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('post-generator-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const formData = new FormData(form);
+            const outputArea = document.getElementById('output-area');
+            const loading = document.getElementById('loading');
+            
+            // Show loading state and clear previous output
+            outputArea.innerText = '';
+            loading.classList.remove('hidden');
+            outputArea.classList.remove('border-red-500', 'border-secondary-green');
+            outputArea.classList.add('border-gray-400'); // Temporary border while loading
+
+            try {
+                // Send data to the Flask backend's '/generate' route
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                // Handle success or error from the JSON response
+                if (result.success) {
+                    outputArea.innerText = result.post;
+                    outputArea.classList.remove('border-gray-400');
+                    outputArea.classList.add('border-secondary-green');
+                } else {
+                    outputArea.innerText = `Error: ${result.post}`;
+                    outputArea.classList.remove('border-gray-400');
+                    outputArea.classList.add('border-red-500'); // Red border for error
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                outputArea.innerText = 'Network error: Could not connect to the AI agent server.';
+                outputArea.classList.remove('border-gray-400');
+                outputArea.classList.add('border-red-500');
+            } finally {
+                // Hide loading state
+                loading.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,4 +1,5 @@
-/* Exercise 2
+/* Exercise 2: Advanced Module Usage using ES6 module syntax
+
 5. import the array of person objects from the data.js module.*/
 import people from "./data.js";
 

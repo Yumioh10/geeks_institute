@@ -1,4 +1,5 @@
-/* Exercise 2:
+/* Exercise 2: Advanced Module Usage using ES6 module syntax
+
 2. define an array of objects */
 const people = [{
    name:"Sarah",

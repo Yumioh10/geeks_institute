@@ -1,4 +1,4 @@
-/* Exercise 1:*/
+/* Exercise 1: Multiple Exports and Import using CommonJS syntax*/
 /* 2. Create an array of product objects */
 const productList = [
    {
