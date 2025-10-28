@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 
 app = Flask(__name__)
 
+
 load_dotenv()
 try:
     client = OpenAI(
