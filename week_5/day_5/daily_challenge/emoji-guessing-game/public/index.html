@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emoji Guessing Game</title>
+    <!-- Remove style.css and add Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<!-- Apply Tailwind classes for dark mode and layout -->
+<body class="bg-gray-900 text-gray-200 font-sans flex justify-center items-center min-h-screen p-4 sm:p-6">
+
+    <div class="container w-full max-w-2xl mx-auto text-center">
+        <header>
+            <h1 class="text-4xl sm:text-5xl font-bold text-indigo-400 mb-2">Emoji Guessing Game</h1>
+            <h2 class="text-2xl font-medium mb-6">Score: <span id="score">0</span></h2>
+        </header>
+
+        <main>
+            <!-- Game Card with Tailwind classes -->
+            <div class="game-card bg-gray-800 rounded-xl p-6 sm:p-8 shadow-2xl mb-8">
+                <div id="emoji-display" class="text-7xl sm:text-9xl mb-6 transition-transform duration-200 ease-in-out">❓</div>
+                <div id="options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+                    <!-- Options will be dynamically inserted here -->
+                </div>
+                <div id="feedback" class="text-lg font-semibold min-h-[1.5em] mt-5"></div>
+                <button id="next-button" class="bg-indigo-500 text-white font-bold py-3 px-6 rounded-lg text-lg transition duration-200 hover:bg-indigo-600 mt-5" style="display: none;">Next Question</button>
+            </div>
+
+            <!-- Leaderboard Card with Tailwind classes -->
+            <div class="leaderboard-card bg-gray-800 rounded-xl p-6 sm:p-8 shadow-2xl">
+                <h3 class="text-2xl font-bold text-indigo-400 mb-4">Leaderboard</h3>
+                <ul id="leaderboard-list" class="text-left mb-6">
+                    <!-- Leaderboard will be dynamically inserted here -->
+                </ul>
+                <form id="leaderboard-form" class="flex flex-col gap-4">
+                    <h4 class="text-xl font-semibold">Add Your Score!</h4>
+                    <input type="text" id="name-input" placeholder="Enter your name" required class="bg-gray-700 border border-gray-600 text-gray-200 rounded-lg p-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                    <button type="submit" class="bg-teal-500 text-gray-900 font-bold py-3 px-6 rounded-lg text-base transition duration-200 hover:bg-teal-400">Save Score</button>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="client.js"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+@url = http://localhost:3000
+
+### Get all blog posts
+GET http://localhost:3000/
+Content-Type: application/json
+
+### Get a single blog post by Id
+GET http://localhost:3000/api/posts/4
+Content-Type: application/json
+
+### Create a new blog post
+POST http://localhost:3000/api/posts
+Content-Type: application/json
+
+{
+   "title":"The new Javascript 2022 is HERE 5 Features that will blow your mind",
+   "content":"The ECMAScript committee, the folks responsible for setting the standard of what JavaScript should be, has recently released their finalized set of new features that will be included in the next version of JavaScript, known as ECMAScript 2022 or ES2022 for short. With these features, ES2022 looks to solidify its place as the world/'s most popular programming language and introduce some exciting new functionality that will make your life easier! Here are five of my favorite new features in the upcoming JavaScript 2022."
+}
+
+### Update a blog post by Id
+PUT http://localhost:3000/api/posts/2
+Content-Type: application/json
+
+{
+   "title": "The Complete Guide to Building Your First AI Agent with LangGraph.",
+   "content": "What should have been a seamless autonomous workflow turned into an embarrassing loop of repeated clarification requests and inconsistent decisions. The client remained polite but visibly disappointed. That failure transformed my approach and became the foundation for how I explain these systems. Once you understand the core principles, building effective agents becomes surprisingly simple."
+}
+
+### Delete a blog post by Id
+DELETE http://localhost:3000/api/posts/4
+Content-Type: application/json

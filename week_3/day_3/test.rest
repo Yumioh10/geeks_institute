@@ -1,0 +1,33 @@
+@base_url = http://localhost:5000
+
+### Get all users
+GET http://127.0.0.1:5000/generate-text
+
+
+### Get user by ID
+GET {{base_url}}/
+
+### Create new user
+POST http://127.0.0.1:5000/generate-text
+Content-Type: application/json
+
+{
+  "name": "Sarah Park",
+  "email": "sarah@example.com", 
+  "password": "password123",
+  "role": "user",
+  "status": "active"
+}
+
+### Update user
+PUT {{base_url}}/users/6901f278b1080482015ab9c5
+Content-Type: application/json
+
+{
+  "name": "Sarah Park",
+  "email": "sarah.park@example.com"
+}
+
+### Delete user
+DELETE {{base_url}}/users/6901f1edb1080482015ab9c2
+

@@ -20,14 +20,31 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-User.create({ name: "John Doe", email: "john.doe@example.com", age: 30 })
+User.create({ name: "John Doe", email: "john.doe@example.com"})
   .then(() => console.log("User created successfully"))
   .catch((error) => console.error("Error creating user:", error));
 
-User.create({name: "Sarah Smith", email: "sarah.smith@example.com", age: 25 })
+User.create({name: "Sarah Smith", email: "sarah.smith@example.com"})
   .then(() => console.log("User created successfully"))
   .catch((error) => console.error("Error creating user:", error));
 
-User.create({ name: "Diana Lee", email: "diana.lee@example.com", age: 28 })
+User.create({ name: "Diana Lee", email: "diana.lee@example.com"})
   .then(() => console.log("User created successfully"))
   .catch((error) => console.error("Error creating user:", error));
+
+const Project = mongoose.model("Project", new mongoose.Schema({
+  title: { type: String, required: true },
+  description: String,
+  status: { type: String, enum: ["Not Started", "In Progress", "Completed"], default: "Not Started" },
+  assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+}));
+
+const Task = mongoose.model("Task", new mongoose.Schema({
+  title: { type: String, required: true },
+  description: String,
+  status: { type: String, enum: ["Not Started", "In Progress", "Completed"], default: "Not Started" },
+  assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  project: { type: mongoose.Schema.Types.ObjectId, ref: "Project" }
+}));
+
+connectDB();

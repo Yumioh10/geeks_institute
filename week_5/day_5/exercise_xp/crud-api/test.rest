@@ -1,0 +1,9 @@
+### Test Cases for CRUD API
+### fetch base URL from environment variable
+@baseUrl = {{baseUrl}}
+
+### fetch all posts
+GET HTTP://localhost:5000/api/posts
+
+### fetch a single post by ID
+GET HTTP://localhost:5000/api/posts/1

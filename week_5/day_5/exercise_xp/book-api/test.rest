@@ -1,0 +1,15 @@
+### Read all books
+GET HTTP://localhost:5000/api/books
+
+### Read a single book by ID
+GET HTTP://localhost:5000/books/1
+
+### Create a new book
+POST HTTP://localhost:5000/api/books
+Content-Type: application/json
+
+{
+  "title": "New Book Title",
+  "author": "New Book Author",
+  "publishedYear": 2025
+}

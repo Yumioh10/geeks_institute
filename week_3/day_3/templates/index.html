@@ -3,115 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Social Post Generator</title>
+    <title>AI Content Generator</title>
+    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind for Inter font and simple theming -->
     <script>
-        // Optional: Tailwind configuration if needed, but the defaults are fine for this project
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
                     colors: {
-                        'primary-blue': '#3498db',
-                        'secondary-green': '#2ecc71',
-                        'warning-orange': '#e67e22',
+                        'primary': '#4f46e5', // Indigo 600
+                        'primary-dark': '#4338ca', // Indigo 700
+                        'surface': '#f9fafb', // Gray 50
                     }
                 }
             }
         }
     </script>
+    <!-- Inter Font Import -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom scrollbar styling for the results area */
+        #result-box::-webkit-scrollbar {
+            width: 8px;
+        }
+        #result-box::-webkit-scrollbar-thumb {
+            background-color: #d1d5db;
+            border-radius: 4px;
+        }
+        #result-box::-webkit-scrollbar-track {
+            background-color: #f3f4f6;
+        }
+        /* Style for all select and input fields */
+        .form-input-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #D1D5DB;
+            border-radius: 0.5rem;
+            transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            color: #374151;
+            background-color: #ffffff;
+        }
+
+        .form-input-select:focus {
+            outline: none;
+            border-color: #4f46e5; /* primary */
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12); /* subtle focus ring */
+        }
+    </style>
 </head>
-<body class="bg-gray-100 flex justify-center p-8 min-h-screen">
-    <div class="container bg-white p-8 md:p-10 rounded-xl shadow-2xl w-full max-w-4xl">
-        <h1 class="text-4xl font-extrabold text-primary-blue text-center mb-8">
-            ✨ AI Content Agent: Post Generator
-        </h1>
+<body class="bg-surface font-sans antialiased min-h-screen p-4 md:p-8">
 
-        <form id="post-generator-form" class="space-y-6">
-            <div>
-                <label for="transcript" class="block mb-2 text-lg font-semibold text-gray-700">
-                    Raw Transcript / Notes:
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-gray-900 mb-2">AI Content Studio</h1>
+            <p class="text-lg text-gray-600">Generate creative text using the integrated Gemini API.</p>
+        </header>
+
+        <!-- Main Content Card -->
+        <div class="bg-white p-6 md:p-10 rounded-xl shadow-2xl border border-gray-100">
+
+            <!-- Input Section -->
+            <div class="mb-8">
+                <!-- Primary Prompt Input -->
+                <label for="prompt-input" class="block text-sm font-medium text-gray-700 mb-2">
+                    Primary Content Idea / Instructions
                 </label>
-                <textarea id="transcript" name="transcript" 
-                          placeholder="Paste your meeting notes, interview transcript, or raw ideas here..."
-                          class="w-full p-4 border border-gray-300 rounded-lg focus:ring-primary-blue focus:border-primary-blue transition duration-150 ease-in-out"
-                          rows="6" required></textarea>
+                <textarea id="prompt-input" rows="4" class="form-input-select p-4" placeholder="e.g., A short summary of the key findings from the latest space telescope images."></textarea>
+            
+                <!-- Context Fields (Topic, Platform, Tone) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                    
+                    <!-- Topic Input -->
+                    <div>
+                        <label for="topic-input" class="block text-sm font-medium text-gray-700 mb-2">
+                            Topic Keywords
+                        </label>
+                        <input type="text" id="topic-input" class="form-input-select" value="Space, Astronomy" placeholder="e.g., Technology, Finance, Travel">
+                    </div>
+
+                    <!-- Social Platform Select -->
+                    <div>
+                        <label for="platform-select" class="block text-sm font-medium text-gray-700 mb-2">
+                            Social Platform
+                        </label>
+                        <select id="platform-select" class="form-input-select">
+                            <option value="Twitter Post (1-2 sentences)">X (Twitter)</option>
+                            <option value="LinkedIn Article (short paragraph)">LinkedIn</option>
+                            <option value="Instagram Caption (short and punchy)">Instagram</option>
+                            <option value="Facebook Post (1-3 paragraphs)">Facebook</option>
+                            <option value="YouTube Video Script Segment">YouTube Script</option>
+                        </select>
+                    </div>
+
+                    <!-- Tone Select -->
+                    <div>
+                        <label for="tone-select" class="block text-sm font-medium text-gray-700 mb-2">
+                            Tone
+                        </label>
+                        <select id="tone-select" class="form-input-select">
+                            <option value="Professional and Informative">Professional</option>
+                            <option value="Casual and Friendly">Casual</option>
+                            <option value="Humorous and Witty">Humorous</option>
+                            <option value="Academic and Serious">Academic</option>
+                        </select>
+                    </div>
+
+                </div>
             </div>
 
-            <div>
-                <label for="platform" class="block mb-2 text-lg font-semibold text-gray-700">
-                    Target Social Media Platform:
-                </label>
-                <select id="platform" name="platform"
-                        class="w-full p-4 border border-gray-300 rounded-lg bg-white focus:ring-primary-blue focus:border-primary-blue transition duration-150 ease-in-out">
-                    <option value="twitter">X (Concise, Punchy)</option>
-                    <option value="linkedin">LinkedIn (Professional, Value-Driven)</option>
-                    <option value="instagram">Instagram (Caption) (Visual, Emojis)</option>
-                    <option value="generic">Generic/Blog Snippet (Flexible Format)</option>
-                </select>
+            <!-- Action Button -->
+            <div class="flex justify-end">
+                <button id="generate-button" class="w-full md:w-auto px-6 py-3 bg-primary text-white font-semibold rounded-lg shadow-lg hover:bg-primary-dark transition duration-300 ease-in-out transform hover:-translate-y-0.5 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                    Generate Content
+                </button>
             </div>
 
-            <button type="submit"
-                    class="w-full py-3 bg-primary-blue text-white font-bold text-xl rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out shadow-lg transform hover:scale-[1.01]">
-                Generate Engaging Post
-            </button>
-        </form>
+            <!-- Status Indicator -->
+            <div id="status-message" class="mt-4 text-center h-6 text-sm text-gray-500 hidden">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Generating response...
+            </div>
+            
+            <!-- Error Message Box -->
+            <div id="error-message" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg hidden">
+                <p class="font-bold">Error:</p>
+                <p id="error-details"></p>
+            </div>
 
-        <div id="loading" class="text-center mt-6 text-warning-orange font-medium text-lg hidden">
-            ... Generating content with 10 years of AI expertise ...
+
+            <!-- Result Section -->
+            <div class="mt-10">
+                <h2 class="text-xl font-bold text-gray-800 mb-3">Generated Result</h2>
+                <div id="result-box" class="min-h-[100px] max-h-96 overflow-y-auto bg-surface p-4 rounded-lg border border-gray-200 text-gray-800 whitespace-pre-wrap shadow-inner">
+                    Your generated content will appear here.
+                </div>
+            </div>
+
         </div>
 
-        <h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4 border-b pb-2">Generated Post:</h2>
-        
-        <div id="output-area" 
-             class="min-h-[150px] p-6 bg-gray-50 border-2 border-secondary-green rounded-lg text-gray-800 whitespace-pre-wrap leading-relaxed shadow-inner">
-            Your AI-generated, high-quality post will appear here.
-        </div>
     </div>
 
     <script>
-        document.getElementById('post-generator-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        const API_URL = "http://127.0.0.1:5000/generate-text"; // Reverted to default Flask port 5000
+        const MAX_RETRIES = 5;
+        const BASE_DELAY_MS = 1000;
 
-            const form = e.target;
-            const formData = new FormData(form);
-            const outputArea = document.getElementById('output-area');
-            const loading = document.getElementById('loading');
+        const promptInput = document.getElementById('prompt-input');
+        const topicInput = document.getElementById('topic-input');
+        const platformSelect = document.getElementById('platform-select');
+        const toneSelect = document.getElementById('tone-select');
+        const generateButton = document.getElementById('generate-button');
+        const resultBox = document.getElementById('result-box');
+        const statusMessage = document.getElementById('status-message');
+        const errorMessage = document.getElementById('error-message');
+        const errorDetails = document.getElementById('error-details');
+
+        generateButton.addEventListener('click', handleGeneration);
+
+        // Helper function for exponential backoff delay
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        function setUIState(isLoading, errorText = null) {
+            generateButton.disabled = isLoading;
+            statusMessage.classList.toggle('hidden', !isLoading);
+            errorMessage.classList.add('hidden');
             
-            // Show loading state and clear previous output
-            outputArea.innerText = '';
-            loading.classList.remove('hidden');
-            outputArea.classList.remove('border-red-500', 'border-secondary-green');
-            outputArea.classList.add('border-gray-400'); // Temporary border while loading
-
-            try {
-                // Send data to the Flask backend's '/generate' route
-                const response = await fetch('/generate', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                // Handle success or error from the JSON response
-                if (result.success) {
-                    outputArea.innerText = result.post;
-                    outputArea.classList.remove('border-gray-400');
-                    outputArea.classList.add('border-secondary-green');
-                } else {
-                    outputArea.innerText = `Error: ${result.post}`;
-                    outputArea.classList.remove('border-gray-400');
-                    outputArea.classList.add('border-red-500'); // Red border for error
-                }
-            } catch (error) {
-                console.error('Fetch error:', error);
-                outputArea.innerText = 'Network error: Could not connect to the AI agent server.';
-                outputArea.classList.remove('border-gray-400');
-                outputArea.classList.add('border-red-500');
-            } finally {
-                // Hide loading state
-                loading.classList.add('hidden');
+            if (isLoading) {
+                generateButton.textContent = 'Generating...';
+                resultBox.textContent = 'Awaiting AI response...';
+            } else {
+                generateButton.textContent = 'Generate Content';
             }
-        });
+
+            if (errorText) {
+                errorMessage.classList.remove('hidden');
+                errorDetails.textContent = errorText;
+                resultBox.textContent = 'Failed to generate content.';
+            }
+        }
+
+        async function handleGeneration() {
+            const primaryContent = promptInput.value.trim();
+            const topic = topicInput.value.trim();
+            const platform = platformSelect.value;
+            const tone = toneSelect.value;
+
+            if (!primaryContent) {
+                setUIState(false, "Please enter a primary content idea before generating.");
+                return;
+            }
+
+            // Construct the comprehensive prompt for the AI
+            const fullPrompt = `Generate content for a post. Use the following context:
+- Primary Idea: "${primaryContent}"
+- Topic: "${topic}"
+- Target Platform: "${platform}"
+- Desired Tone: "${tone}"
+
+Please write the final output that strictly adheres to the tone and platform requirements.`;
+
+            setUIState(true);
+
+            for (let i = 0; i < MAX_RETRIES; i++) {
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ prompt: fullPrompt }), // Send the combined prompt
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        const generatedText = data.generated_text || "The AI returned an empty response.";
+                        resultBox.textContent = generatedText;
+                        setUIState(false);
+                        return; // Success, exit function
+                    } else if (response.status === 429 || response.status >= 500) {
+                        // Handle rate limiting (429) or server errors (5xx) with retry
+                        if (i < MAX_RETRIES - 1) {
+                            const delayTime = BASE_DELAY_MS * Math.pow(2, i) + Math.random() * 1000;
+                            console.warn(`Attempt ${i + 1} failed with status ${response.status}. Retrying in ${delayTime / 1000}s...`);
+                            await delay(delayTime);
+                        } else {
+                            // Last retry failed
+                            const errorData = await response.json().catch(() => ({}));
+                            const errorMsg = errorData.error || `Server responded with status ${response.status}. Please check Flask logs.`;
+                            setUIState(false, errorMsg);
+                            return;
+                        }
+                    } else {
+                        // Handle client errors (4xx other than 429) without retry
+                        const errorData = await response.json().catch(() => ({}));
+                        let errorMsg;
+                        
+                        if (response.status === 404) {
+                            errorMsg = `Error 404: The API endpoint was not found at ${API_URL}. Please ensure your Flask server is running and the route /generate-text is correctly defined.`;
+                        } else {
+                            errorMsg = errorData.error || `Client error: ${response.status}.`;
+                        }
+
+                        setUIState(false, errorMsg);
+                        return;
+                    }
+                } catch (error) {
+                    // Handle network errors (e.g., server down)
+                    if (i < MAX_RETRIES - 1) {
+                        const delayTime = BASE_DELAY_MS * Math.pow(2, i) + Math.random() * 1000;
+                        console.warn(`Network error on attempt ${i + 1}. Retrying in ${delayTime / 1000}s...`);
+                        await delay(delayTime);
+                    } else {
+                        setUIState(false, `Failed to connect to the Flask server at ${API_URL}. Please ensure it is running.`);
+                        console.error("Fetch failed after all retries:", error);
+                        return;
+                    }
+                }
+            }
+        }
     </script>
 </body>
 </html>

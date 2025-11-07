@@ -1,0 +1,16 @@
+{
+  "name": "emoji-guessing-game",
+  "version": "1.0.0",
+  "description": "An emoji guessing game built with Node.js and Express.",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
