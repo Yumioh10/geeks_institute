@@ -1,6 +1,5 @@
 /**
- * Task 2: Uses the installed 'chalk' package to display a colorful message.
- * The function is exported using CommonJS module system.
+ * Task 2: Uses the installed 'chalk' package to display a colorful message. install 'chalk' using npm install chalk@4.1.2
  */
 const chalk = require('chalk');
 
