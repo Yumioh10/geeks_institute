@@ -1,0 +1,22 @@
+### Get all books
+GET http://localhost:3000/books
+
+### Create a new book with a JSON request body
+POST http://localhost:3000/books
+Content-Type: application/json
+
+{
+   "title":"Python Crash Course",
+   "author": "Eric Matth"
+   }
+
+### Update a book by ID with a JSON request body
+PUT http://localhost:3000/books/1
+Content-Type: application/json
+
+{
+   "author": "Eric"
+}
+
+### Delete a book by ID
+DELETE http://localhost:3000/books/:id
