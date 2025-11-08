@@ -1,83 +1,88 @@
-// Step 4: Create a Router Module for To-Dos
-
 const express = require('express');
-const router = ex
-$$press.Router();
+const router = express.Router();
 
-// Sample in-memory database for storing to-do items
-const todos = [
-    { id: 1, task: "Install Express.js", completed: true },
-    { id: 2, task: "Define API routes", completed: false }
-];
-// Simple counter to ensure unique IDs for new tasks
-let nextId = id++;
+// Sample in-memory "database"
+const todos = [];
+let nextId = 1; // Simple counter for generating unique IDs
 
-// --- API Endpoints ---
+// ------------------------------------
+// --- Define CRUD Routes ---
+// ------------------------------------
 
-// GET / (Get all to-do items)
+/**
+ * GET /todos
+ * Get all to-do items
+ */
 router.get('/', (req, res) => {
-    // Returns the entire list of todos as JSON
-    res.json(todos);
+  res.json(todos);
 });
 
-// POST / (Add a new to-do item)
+/**
+ * POST /todos
+ * Add a new to-do item
+ */
 router.post('/', (req, res) => {
-    const { task } = req.body; // Expects { "task": "..." } in JSON body
+  const { task } = req.body;
 
-    if (!task || task.trim() === "") {
-        return res.status(400).json({ error: 'Task content is required.' });
-    }
+  // Basic validation
+  if (!task) {
+    return res.status(400).json({ error: 'Task is required' });
+  }
 
-    const newTodo = {
-        id: nextId++,
-        task: task.trim(),
-        completed: false
-    };
+  const newTodo = {
+    id: nextId++,
+    task: task,
+    completed: false
+  };
 
-    todos.push(newTodo);
-    // Respond with 201 Created and the new item
-    res.status(201).json(newTodo);
+  todos.push(newTodo);
+  res.status(201).json(newTodo); // 201 Created
 });
 
-// PUT /:id (Update a to-do item by ID)
+/**
+ * PUT /todos/:id
+ * Update a to-do item by ID
+ */
 router.put('/:id', (req, res) => {
-    // Convert the URL parameter ID to an integer
-    const id = parseInt(req.params.id);
-    const { task, completed } = req.body; 
+  const { id } = req.params;
+  const { task, completed } = req.body;
 
-    const todo = todos.find(t => t.id === id);
+  const todo = todos.find(t => t.id === parseInt(id));
 
-    if (!todo) {
-        return res.status(404).json({ error: 'To-do item not found.' });
-    }
-    
-    // Update fields if they are present in the request body
-    if (task !== undefined && task.trim() !== "") {
-        todo.task = task.trim();
-    }
-    if (completed !== undefined) {
-        // Ensure completed is a boolean
-        todo.completed = !!completed;
-    }
+  // Handle "Not Found"
+  if (!todo) {
+    return res.status(404).json({ error: 'Todo not found' });
+  }
 
-    res.json(todo);
+  // Update fields if they were provided
+  if (task !== undefined) {
+    todo.task = task;
+  }
+  if (completed !== undefined) {
+    todo.completed = completed;
+  }
+
+  res.json(todo);
 });
 
-// DELETE /:id (Delete a to-do item by ID)
+/**
+ * DELETE /todos/:id
+ * Delete a to-do item by ID
+ */
 router.delete('/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    const index = todos.findIndex(t => t.id === id);
+  const { id } = req.params;
+  const todoIndex = todos.findIndex(t => t.id === parseInt(id));
 
-    if (index === -1) {
-        return res.status(404).json({ error: 'To-do item not found.' });
-    }
+  // Handle "Not Found"
+  if (todoIndex === -1) {
+    return res.status(404).json({ error: 'Todo not found' });
+  }
 
-    // Remove the item from the array
-    todos.splice(index, 1);
-    
-    // Respond with 204 No Content for a successful deletion
-    res.status(204).send(); 
+  // Remove the item from the array
+  todos.splice(todoIndex, 1);
+
+  res.status(204).send(); // 204 No Content (successful deletion)
 });
 
-// Export the router module
+// Don't forget to export the router!
 module.exports = router;

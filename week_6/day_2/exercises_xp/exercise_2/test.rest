@@ -1,8 +1,21 @@
-### define url
-url: HTTP://localhost:3000/
-
 ### Get all to-do items
-GET HTTP://localhost:3000/
+GET http://localhost:3000/todos
 
-### Get to-do item by id
-GET HTTP://localhost:3000/api
+### Create a new to-do item with a JSON request body
+POST http://localhost:3000/todos
+Content-Type: application/json
+
+{
+   "task":"Read Quran"
+   }
+
+### Update a to-do item by ID with a JSON request body
+PUT http://localhost:3000/todos/1
+Content-Type: application/json
+
+{
+   "completed": true
+}
+
+### Delete a to-do item by Id
+DELETE http://localhost:3000/todos/2
