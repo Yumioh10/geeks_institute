@@ -1,0 +1,11 @@
+### Get all books
+GET http://localhost:3000/quiz
+
+### Create a new book with a JSON request body
+POST http://localhost:3000/quiz
+Content-Type: application/json
+
+{
+  "answer": "Blue whale"
+}
+
