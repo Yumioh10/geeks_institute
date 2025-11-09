@@ -1,4 +1,4 @@
--- Active: 1759060128087@@localhost@5432
+-- Active: 1762685719645@@localhost@5432@blog_api_db
 CREATE TABLE posts (
     id SERIAL PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
