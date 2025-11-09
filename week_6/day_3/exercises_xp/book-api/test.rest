@@ -1,0 +1,16 @@
+### get all posts
+GET http://localhost:5000/api/books
+
+### get post by id
+GET http://localhost:5000/api/books/2
+
+### Create a post
+POST http://localhost:5000/api/books
+Content-Type: application/json
+
+{
+   "title":"The Great Gatsby",
+   "author":"F. Scott Fitzgerald",
+   "publishedYear":1925
+   }
+
