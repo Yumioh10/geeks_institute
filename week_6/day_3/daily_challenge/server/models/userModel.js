@@ -1,73 +1,87 @@
-// server/models/userModel.js
-const db = require('../config/db');
+const { db } = require('../config/database');
 
-const userModel = {
-  // Use a transaction to create a user in both tables
-  async create(userData) {
-    const { email, username, first_name, last_name, password_hash } = userData;
+class UserModel {
+  // Create user with transaction
+  static async createUser(userData, hashedPassword) {
+    const trx = await db.transaction();
+    try {
+      // Insert into users table
+      const [user] = await trx('users')
+        .insert({
+          email: userData.email,
+          username: userData.username,
+          first_name: userData.first_name,
+          last_name: userData.last_name
+        })
+        .returning(['id', 'username', 'email']);
 
-    return db.transaction(async (trx) => {
-      // 1. Insert into 'users' table and get the new user's ID
-      const [newUser] = await trx('users')
-        .insert({ email, username, first_name, last_name })
-        .returning(['id', 'username', 'email']); // Return the new user's data
-
-      // 2. Insert into 'hashpwd' table using the new ID
+      // Insert into hashpwd table
       await trx('hashpwd').insert({
-        id: newUser.id,
-        username: newUser.username,
-        password_hash: password_hash,
+        username: userData.username,
+        hash: hashedPassword
       });
 
-      return newUser; // Return the user data (without password)
-    });
-  },
-
-  // Find all users (basic info)
-  findAll() {
-    return db('users').select('id', 'username', 'email', 'first_name', 'last_name');
-  },
-
-  // Find a user by their ID
-  findById(id) {
-    return db('users')
-      .select('id', 'username', 'email', 'first_name', 'last_name')
-      .where({ id })
-      .first();
-  },
-
-  // Find user credentials by username (for login)
-  findCredentialsByUsername(username) {
-    return db('hashpwd').where({ username }).first();
-  },
-
-  // Find user data by username (to return on login)
-  findByUsername(username) {
-     return db('users')
-      .select('id', 'username', 'email')
-      .where({ username })
-      .first();
-  },
-
-  // Update a user's information
-  update(id, updates) {
-    // Only update fields that are allowed
-    const allowedUpdates = {
-      email: updates.email,
-      first_name: updates.first_name,
-      last_name: updates.last_name
-    };
-
-    // Remove any undefined fields
-    Object.keys(allowedUpdates).forEach(key => 
-      allowedUpdates[key] === undefined && delete allowedUpdates[key]
-    );
-
-    return db('users')
-      .where({ id })
-      .update(allowedUpdates)
-      .returning(['id', 'username', 'email', 'first_name', 'last_name']);
+      await trx.commit();
+      return user;
+    } catch (error) {
+      await trx.rollback();
+      throw error;
+    }
   }
-};
 
-module.exports = userModel;
+  // Get all users
+  static async getAllUsers() {
+    return await db('users')
+      .select('id', 'email', 'username', 'first_name', 'last_name', 'created_at', 'updated_at')
+      .orderBy('id', 'asc');
+  }
+
+  // Get user by ID
+  static async getUserById(id) {
+    return await db('users')
+      .where({ id })
+      .select('id', 'email', 'username', 'first_name', 'last_name', 'created_at', 'updated_at')
+      .first();
+  }
+
+  // Get user by username
+  static async getUserByUsername(username) {
+    return await db('users')
+      .where({ username })
+      .select('id', 'email', 'username', 'first_name', 'last_name')
+      .first();
+  }
+
+  // Get password hash
+  static async getPasswordHash(username) {
+    const result = await db('hashpwd')
+      .where({ username })
+      .select('hash')
+      .first();
+    return result ? result.hash : null;
+  }
+
+  // Update user
+  static async updateUser(id, userData) {
+    const [updatedUser] = await db('users')
+      .where({ id })
+      .update({
+        ...userData,
+        updated_at: db.fn.now()
+      })
+      .returning(['id', 'email', 'username', 'first_name', 'last_name', 'updated_at']);
+    
+    return updatedUser;
+  }
+
+  // Check if user exists
+  static async userExists(username, email) {
+    const user = await db('users')
+      .where({ username })
+      .orWhere({ email })
+      .first();
+    return !!user;
+  }
+}
+
+module.exports = UserModel;

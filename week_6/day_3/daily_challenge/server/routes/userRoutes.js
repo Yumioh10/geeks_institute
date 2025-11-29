@@ -1,21 +1,14 @@
-// server/routes/userRoutes.js
 const express = require('express');
 const router = express.Router();
-const userController = require('../controllers/userController');
+const UserController = require('../controllers/userController');
 
-// POST /register
-router.post('/register', userController.register);
+// Authentication routes
+router.post('/register', UserController.register);
+router.post('/login', UserController.login);
 
-// POST /login
-router.post('/login', userController.login);
-
-// GET /users
-router.get('/users', userController.getAllUsers);
-
-// GET /users/:id
-router.get('/users/:id', userController.getUserById);
-
-// PUT /users/:id
-router.put('/users/:id', userController.updateUser);
+// User management routes
+router.get('/users', UserController.getAllUsers);
+router.get('/users/:id', UserController.getUserById);
+router.put('/users/:id', UserController.updateUser);
 
 module.exports = router;
