@@ -1,0 +1,35 @@
+### 1. Create a new task:
+POST http://localhost:3000/api/tasks
+Content-Type: application/json
+
+{"title":"create task project","description":"initiate project in linear","status":"pending"}
+
+### 2. Get all tasks:
+GET http://localhost:3000/api/tasks
+
+### 3. Get all tasks by status (filtering):
+GET http://localhost:3000/api/tasks?status=pending
+
+### 4. Get task by ID:
+GET http://localhost:3000/api/tasks/692b2f5691babedcd8820cc3
+
+### 5. Update task:
+PUT http://localhost:3000/api/tasks/692b2f5691babedcd8820cc3 
+Content-Type: application/json
+
+{"status":"in-progress","description":"Updated description"}
+
+### 6. Delete task:
+DELETE http://localhost:3000/api/tasks/692b2f5691babedcd8820cc3
+
+### 7. Test validation (missing title):
+POST http://localhost:3000/api/tasks
+Content-Type: application/json
+
+{"description":"Task without title"}
+
+### 8. Test invalid ID:
+GET http://localhost:3000/api/tasks/abc
+
+### 9. Test task not found:
+GET http://localhost:3000/api/tasks/999
