@@ -1,0 +1,21 @@
+[
+  {
+    "id": 1,
+    "name": "Jane",
+    "lastName": "Doe",
+    "email": "jane@example.com",
+    "username": "johnny",
+    "password": "$2b$10$N5CpC.9lyNS2tZSoJYYLxusxytE7vUYWYRMbKNLkBMSW.IR0KaQFC",
+    "createdAt": "2025-11-30T11:05:53.155Z",
+    "updatedAt": "2025-11-30T11:06:04.036Z"
+  },
+  {
+    "id": 2,
+    "name": "Sarah",
+    "lastName": "ELB",
+    "email": "sarah.san@gmail.com",
+    "username": "noorhoda",
+    "password": "$2b$10$MIrvy35RvYS6QRxq8EPbre1CZSfr74S4wMR7Olkz3OCFOKQBeiLsG",
+    "createdAt": "2025-11-30T11:07:23.544Z"
+  }
+]

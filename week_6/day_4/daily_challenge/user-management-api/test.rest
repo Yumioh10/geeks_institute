@@ -1,0 +1,23 @@
+### Register a user:
+POST http://localhost:3000/register
+Content-Type: application/json
+
+{"name": "John", "lastName": "Doe", "email": "john@example.com", "username": "johnny", "password": "securepassword"}
+
+### Login:
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{"username": "johnny", "password": "securepassword"}
+
+### Update user:
+PUT http://localhost:3000/users/1
+Content-Type: application/json
+
+{"name": "Jane", "email": "jane@example.com"}
+
+### Get all users:
+GET http://localhost:3000/users
+
+### Get user by ID:
+GET http://localhost:3000/users/1
