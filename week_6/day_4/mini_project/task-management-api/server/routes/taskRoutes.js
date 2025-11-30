@@ -3,9 +3,6 @@ const router = express.Router();
 const TaskController = require('../controllers/taskController');
 const { validateTask, validateTaskUpdate, validateId } = require('../middleware/validation');
 
-// GET task statistics
-router.get('/tasks/stats', TaskController.getTaskStats);
-
 // GET all tasks
 router.get('/tasks', TaskController.getAllTasks);
 
@@ -22,4 +19,3 @@ router.put('/tasks/:id', validateId, validateTaskUpdate, TaskController.updateTa
 router.delete('/tasks/:id', validateId, TaskController.deleteTask);
 
 module.exports = router;
-

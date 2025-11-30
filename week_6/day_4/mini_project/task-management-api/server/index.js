@@ -1,6 +1,6 @@
 const express = require('express');
-require('dotenv').config();
-const connectDB = require('./config/database');
+const path = require('path');
+const fs = require('fs').promises;
 const taskRoutes = require('./routes/taskRoutes');
 
 const app = express();
@@ -31,12 +31,10 @@ app.use((err, req, res, next) => {
 });
 
 // Request logger (development)
-if (process.env.NODE_ENV === 'development') {
-  app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
-    next();
-  });
-}
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
+});
 
 // Routes
 app.use('/api', taskRoutes);
@@ -44,20 +42,14 @@ app.use('/api', taskRoutes);
 // Root endpoint
 app.get('/', (req, res) => {
   res.json({
-    message: 'Task Management API with MongoDB',
+    message: 'Task Management API',
     version: '1.0.0',
     endpoints: {
       getAllTasks: 'GET /api/tasks',
       getTaskById: 'GET /api/tasks/:id',
       createTask: 'POST /api/tasks',
       updateTask: 'PUT /api/tasks/:id',
-      deleteTask: 'DELETE /api/tasks/:id',
-      getStats: 'GET /api/tasks/stats'
-    },
-    queryParams: {
-      filter: 'status=pending, priority=high',
-      sort: 'sortBy=-createdAt or sortBy=title',
-      pagination: 'page=1&limit=10'
+      deleteTask: 'DELETE /api/tasks/:id'
     },
     example: {
       createTask: {
@@ -66,9 +58,7 @@ app.get('/', (req, res) => {
         body: {
           title: 'Complete project',
           description: 'Finish the task management API',
-          status: 'pending',
-          priority: 'high',
-          dueDate: '2024-12-31'
+          status: 'pending'
         }
       }
     }
@@ -79,8 +69,7 @@ app.get('/', (req, res) => {
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
-    timestamp: new Date().toISOString(),
-    database: 'connected'
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -102,13 +91,39 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Initialize data directory and file
+const initializeDataFile = async () => {
+  try {
+    const dataDir = path.join(__dirname, 'data');
+    const tasksFile = path.join(dataDir, 'tasks.json');
+
+    // Create data directory if it doesn't exist
+    try {
+      await fs.access(dataDir);
+    } catch {
+      await fs.mkdir(dataDir, { recursive: true });
+      console.log('✓ Data directory created');
+    }
+
+    // Create tasks.json if it doesn't exist
+    try {
+      await fs.access(tasksFile);
+      console.log('✓ tasks.json file exists');
+    } catch {
+      await fs.writeFile(tasksFile, JSON.stringify([], null, 2));
+      console.log('✓ tasks.json file created with empty array');
+    }
+  } catch (error) {
+    console.error('Error initializing data file:', error);
+    throw error;
+  }
+};
+
 // Start server
 const startServer = async () => {
   try {
     console.log('🚀 Starting Task Management API...');
-    
-    // Connect to MongoDB
-    await connectDB();
+    await initializeDataFile();
     
     app.listen(PORT, () => {
       console.log(`✓ Server running on http://localhost:${PORT}`);
@@ -124,14 +139,12 @@ const startServer = async () => {
 startServer();
 
 // Graceful shutdown
-process.on('SIGTERM', async () => {
-  console.log('SIGTERM signal received: closing HTTP server');
-  await require('mongoose').connection.close();
+process.on('SIGTERM', () => {
+  console.log('SIGTERM signal received: closing server');
   process.exit(0);
 });
 
-process.on('SIGINT', async () => {
-  console.log('SIGINT signal received: closing HTTP server');
-  await require('mongoose').connection.close();
+process.on('SIGINT', () => {
+  console.log('SIGINT signal received: closing server');
   process.exit(0);
 });

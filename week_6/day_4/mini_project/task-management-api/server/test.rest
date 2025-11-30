@@ -11,16 +11,16 @@ GET http://localhost:3000/api/tasks
 GET http://localhost:3000/api/tasks?status=pending
 
 ### 4. Get task by ID:
-GET http://localhost:3000/api/tasks/692b2f5691babedcd8820cc3
+GET http://localhost:3000/api/tasks/1
 
 ### 5. Update task:
-PUT http://localhost:3000/api/tasks/692b2f5691babedcd8820cc3 
+PUT http://localhost:3000/api/tasks/1
 Content-Type: application/json
 
 {"status":"in-progress","description":"Updated description"}
 
 ### 6. Delete task:
-DELETE http://localhost:3000/api/tasks/692b2f5691babedcd8820cc3
+DELETE http://localhost:3000/api/tasks/1
 
 ### 7. Test validation (missing title):
 POST http://localhost:3000/api/tasks

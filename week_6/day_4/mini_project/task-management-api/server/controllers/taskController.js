@@ -1,39 +1,26 @@
-const Task = require('../models/Task');
+const FileHandler = require('../utils/fileHandler');
 
 class TaskController {
   // GET /tasks - Get all tasks
   static async getAllTasks(req, res) {
     try {
-      const { status, priority, sortBy = '-createdAt', limit, page = 1 } = req.query;
-
-      // Build query
-      const query = {};
-      if (status) query.status = status;
-      if (priority) query.priority = priority;
-
-      // Build options
-      const options = {
-        sort: sortBy,
-        limit: limit ? parseInt(limit) : 0,
-        skip: limit ? (parseInt(page) - 1) * parseInt(limit) : 0
-      };
-
-      // Execute query
-      const tasks = await Task.find(query)
-        .sort(options.sort)
-        .limit(options.limit)
-        .skip(options.skip);
-
-      // Get total count for pagination
-      const total = await Task.countDocuments(query);
+      const tasks = await FileHandler.readTasks();
+      
+      // Optional filtering by status
+      const { status } = req.query;
+      let filteredTasks = tasks;
+      
+      if (status) {
+        const validStatuses = ['pending', 'in-progress', 'completed'];
+        if (validStatuses.includes(status)) {
+          filteredTasks = tasks.filter(task => task.status === status);
+        }
+      }
 
       res.status(200).json({
         success: true,
-        count: tasks.length,
-        total: total,
-        page: parseInt(page),
-        pages: limit ? Math.ceil(total / parseInt(limit)) : 1,
-        data: tasks
+        count: filteredTasks.length,
+        data: filteredTasks
       });
     } catch (error) {
       console.error('Get all tasks error:', error);
@@ -48,12 +35,12 @@ class TaskController {
   // GET /tasks/:id - Get task by ID
   static async getTaskById(req, res) {
     try {
-      const task = await Task.findById(req.params.id);
+      const task = await FileHandler.findTaskById(req.taskId);
 
       if (!task) {
         return res.status(404).json({
           success: false,
-          message: 'Task not found'
+          message: `Task with ID ${req.taskId} not found`
         });
       }
 
@@ -74,36 +61,32 @@ class TaskController {
   // POST /tasks - Create new task
   static async createTask(req, res) {
     try {
-      const { title, description, status, priority, dueDate } = req.body;
+      const { title, description, status } = req.body;
+      const tasks = await FileHandler.readTasks();
 
-      const task = new Task({
+      // Create new task object
+      const newTask = {
+        id: FileHandler.generateId(tasks),
         title: title.trim(),
         description: description ? description.trim() : '',
         status: status || 'pending',
-        priority: priority || 'medium',
-        dueDate: dueDate || null
-      });
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
 
-      await task.save();
+      // Add task to array
+      tasks.push(newTask);
+
+      // Save to file
+      await FileHandler.writeTasks(tasks);
 
       res.status(201).json({
         success: true,
         message: 'Task created successfully',
-        data: task
+        data: newTask
       });
     } catch (error) {
       console.error('Create task error:', error);
-
-      // Handle Mongoose validation errors
-      if (error.name === 'ValidationError') {
-        const errors = Object.values(error.errors).map(err => err.message);
-        return res.status(400).json({
-          success: false,
-          message: 'Validation failed',
-          errors: errors
-        });
-      }
-
       res.status(500).json({
         success: false,
         message: 'Failed to create task',
@@ -115,49 +98,42 @@ class TaskController {
   // PUT /tasks/:id - Update task
   static async updateTask(req, res) {
     try {
-      const { title, description, status, priority, dueDate } = req.body;
+      const tasks = await FileHandler.readTasks();
+      const taskIndex = await FileHandler.findTaskIndexById(req.taskId);
 
-      const updateData = {};
-      if (title !== undefined) updateData.title = title.trim();
-      if (description !== undefined) updateData.description = description.trim();
-      if (status !== undefined) updateData.status = status;
-      if (priority !== undefined) updateData.priority = priority;
-      if (dueDate !== undefined) updateData.dueDate = dueDate;
-
-      const task = await Task.findByIdAndUpdate(
-        req.params.id,
-        updateData,
-        { 
-          new: true, // Return updated document
-          runValidators: true // Run schema validators
-        }
-      );
-
-      if (!task) {
+      if (taskIndex === -1) {
         return res.status(404).json({
           success: false,
-          message: 'Task not found'
+          message: `Task with ID ${req.taskId} not found`
         });
       }
+
+      const { title, description, status } = req.body;
+
+      // Update task properties
+      if (title !== undefined) {
+        tasks[taskIndex].title = title.trim();
+      }
+      if (description !== undefined) {
+        tasks[taskIndex].description = description.trim();
+      }
+      if (status !== undefined) {
+        tasks[taskIndex].status = status;
+      }
+
+      // Update timestamp
+      tasks[taskIndex].updatedAt = new Date().toISOString();
+
+      // Save to file
+      await FileHandler.writeTasks(tasks);
 
       res.status(200).json({
         success: true,
         message: 'Task updated successfully',
-        data: task
+        data: tasks[taskIndex]
       });
     } catch (error) {
       console.error('Update task error:', error);
-
-      // Handle Mongoose validation errors
-      if (error.name === 'ValidationError') {
-        const errors = Object.values(error.errors).map(err => err.message);
-        return res.status(400).json({
-          success: false,
-          message: 'Validation failed',
-          errors: errors
-        });
-      }
-
       res.status(500).json({
         success: false,
         message: 'Failed to update task',
@@ -169,62 +145,35 @@ class TaskController {
   // DELETE /tasks/:id - Delete task
   static async deleteTask(req, res) {
     try {
-      const task = await Task.findByIdAndDelete(req.params.id);
+      const tasks = await FileHandler.readTasks();
+      const taskIndex = await FileHandler.findTaskIndexById(req.taskId);
 
-      if (!task) {
+      if (taskIndex === -1) {
         return res.status(404).json({
           success: false,
-          message: 'Task not found'
+          message: `Task with ID ${req.taskId} not found`
         });
       }
+
+      // Get deleted task for response
+      const deletedTask = tasks[taskIndex];
+
+      // Remove task from array
+      tasks.splice(taskIndex, 1);
+
+      // Save to file
+      await FileHandler.writeTasks(tasks);
 
       res.status(200).json({
         success: true,
         message: 'Task deleted successfully',
-        data: task
+        data: deletedTask
       });
     } catch (error) {
       console.error('Delete task error:', error);
       res.status(500).json({
         success: false,
         message: 'Failed to delete task',
-        error: error.message
-      });
-    }
-  }
-
-  // GET /tasks/stats - Get task statistics
-  static async getTaskStats(req, res) {
-    try {
-      const stats = await Task.aggregate([
-        {
-          $group: {
-            _id: '$status',
-            count: { $sum: 1 }
-          }
-        }
-      ]);
-
-      const total = await Task.countDocuments();
-      
-      const formattedStats = {
-        total: total,
-        byStatus: {}
-      };
-
-      stats.forEach(stat => {
-        formattedStats.byStatus[stat._id] = stat.count;
-      });
-
-      res.status(200).json({
-        success: true,
-        data: formattedStats
-      });
-    } catch (error) {
-      console.error('Get stats error:', error);
-      res.status(500).json({
-        success: false,
-        message: 'Failed to retrieve statistics',
         error: error.message
       });
     }
