@@ -1,0 +1,36 @@
+{
+  "name": "client_project_tracker",
+  "version": "1.0.0",
+  "description": "Client Project Tracker API with Auth, Roles & MongoDB",
+  "main": "src/main.js",
+  "type": "module",
+  "imports": {
+    "#@/*": "./src/*"
+  },
+  "scripts": {
+    "dev": "nodemon src/main.js",
+    "start": "node src/main.js"
+  },
+  "keywords": [
+    "express",
+    "mongodb",
+    "mongoose",
+    "jwt",
+    "authentication",
+    "authorization",
+    "project-management",
+    "rest-api"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}

@@ -1,0 +1,72 @@
+@base=http://localhost:4000
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MzJkM2U1YjU2Zjk1N2ExNThjNDhiYyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc2NDkzODcyNSwiZXhwIjoxNzY1NTQzNTI1fQ.bzEstpPr_729J0dM_w6KFYygEnXr4Gp1j7TP_Zy0l-Q
+### Register admin
+POST http://localhost:4000/api/auth/register
+Content-Type: application/json
+
+{"name":"nani","email":"nani@example.com","password":"password123", "role":"admin"}
+
+### Login
+POST http://localhost:4000/api/auth/login
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{"email": "nani@example.com","password": "password123"}
+
+### Create project
+POST http://localhost:4000/api/projects
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"name": "design","client": "you Corp","description": "Complete web design","status": "active","deadline": "2025-12-31"}
+
+### Get All Projects
+GET http://localhost:4000/api/projects 
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+### Get Single Project
+GET http://localhost:4000/api/projects/6931b9a11bd352cbaebaf7c2
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### Update Project
+PUT http://localhost:4000/api/projects/69316ecf616ff5e8e50a2b45
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"status": "active"}
+
+### Delete Project
+DELETE http://localhost:4000/api/projects/69316ecf616ff5e8e50a2b45
+Authorization: Bearer {{token}}
+
+### Task 
+
+### Create Task
+POST http://localhost:4000/api/tasks
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"title": "Design homepage","description": "Create mockups for homepage","project": "6932d435b56f957a158c48c1","status": "todo","priority": "high","dueDate": "2025-12-15", "createdBy": "6932d3e5b56f957a158c48bc"}
+
+### Get All Tasks
+GET http://localhost:4000/api/tasks
+Authorization: Bearer {{token}}
+
+### Get Single Task
+GET http://localhost:4000/api/tasks/:id
+Authorization: Bearer {{token}}
+
+### Update Task
+PUT http://localhost:4000/api/tasks/6932d470b56f957a158c48c7
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"status":"completed"}
+
+### Delete Task
+DELETE http://localhost:4000/api/tasks/6932d470b56f957a158c48c7
+Authorization: Bearer {{token}}
+
+
