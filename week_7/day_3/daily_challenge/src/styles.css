@@ -1,0 +1,59 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+}
+
+.form-container {
+    background-color: #dcbfa2; /* The tan color from the image */
+    padding: 20px;
+    border-top: 5px solid #333;
+}
+
+input[type="text"] {
+    width: 50%;
+    padding: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+.destination-header, .dietary-header {
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+button {
+    background-color: #eee;
+    padding: 10px 20px;
+    border: 1px solid #999;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+hr {
+    margin: 0;
+    border: 2px solid white;
+}
+
+.entered-info {
+    background-color: #1a5653; /* The dark teal color from the image */
+    color: white; /* Text defaults to white */
+    padding: 20px;
+}
+
+/* Specific styling for the Entered Info text to match the image */
+.entered-info h2 {
+    margin-top: 0;
+}
+
+.entered-info p {
+    font-size: 1.1rem;
+    margin: 5px 0;
+    font-style: italic;
+}
+
+.entered-info p:last-of-type, 
+.entered-info p:nth-last-of-type(2), 
+.entered-info p:nth-last-of-type(3) {
+    font-style: normal;
+    margin-left: 10px;
+}
