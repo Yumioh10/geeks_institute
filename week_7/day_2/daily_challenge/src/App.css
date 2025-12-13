@@ -1,0 +1,57 @@
+.App {
+  text-align: center;
+  font-family: sans-serif;
+  padding: 50px;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+}
+
+.languages-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Space between cards */
+  flex-wrap: wrap;
+}
+
+.language-card {
+  background-color: #ffebcd; /* BlanchedAlmond color like the demo */
+  border: 1px solid #ddd;
+  padding: 20px;
+  width: 200px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.vote-count {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.language-name {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #e67e22;
+  margin-bottom: 20px;
+}
+
+button {
+  color: green;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  text-decoration: underline;
+}
