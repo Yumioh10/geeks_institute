@@ -1,117 +1,118 @@
-import React from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
-import ErrorBoundary from './ErrorBoundary'
-
-// HomeScreen Component
-const HomeScreen = () => {
-  return (
-    <h1 style={{ padding: '20px', fontSize: '2rem', fontWeight: 'bold' }}>
-      Home
-    </h1>
-  )
+import React from "react";
+import { BrowserRouter, Routes, Route, NavLink } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import ErrorBoundary from "./ErrorBoundary";
+import PostList from "./PostList";
+import posts from "./exercise2.json";
+import SocialMedias from "./Example1";
+import Skills from "./Example2";
+import Experiences from "./Example3";
+import FetchData from "./exercise4";
+// Simple Functional Components
+function HomeScreen() {
+  return <h2>Home</h2>;
 }
 
-// ProfileScreen Component
-const ProfileScreen = () => {
-  return (
-    <h1 style={{ padding: '20px', fontSize: '2rem', fontWeight: 'bold' }}>
-      Profile Screen
-    </h1>
-  )
+function ProfileScreen() {
+  return <h2>Profile Screen</h2>;
 }
 
-// ShopScreen Component - throws an error
-const ShopScreen = () => {
-  throw new Error('Shop screen error!')
+function ShopScreen() {
+  // This throws an error as required
+  throw new Error("An error has occurred in the Shop!");
 }
 
-// Main App Component
 function App() {
   return (
-    <BrowserRouter>
-      <div>
-        {/* Bootstrap-style Navbar */}
-        <nav
-          style={{
-            display: 'flex',
-            gap: '10px',
-            padding: '10px 20px',
-            backgroundColor: '#f8f9fa',
-            borderBottom: '1px solid #dee2e6',
-          }}
-        >
-          <NavLink
-            to="/"
-            style={({ isActive }) => ({
-              padding: '8px 16px',
-              textDecoration: 'none',
-              backgroundColor: isActive ? '#0d6efd' : 'transparent',
-              color: isActive ? 'white' : '#0d6efd',
-              borderRadius: '4px',
-              fontWeight: '500',
-            })}
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/profile"
-            style={({ isActive }) => ({
-              padding: '8px 16px',
-              textDecoration: 'none',
-              backgroundColor: isActive ? '#0d6efd' : 'transparent',
-              color: isActive ? 'white' : '#0d6efd',
-              borderRadius: '4px',
-              fontWeight: '500',
-            })}
-          >
-            Profile
-          </NavLink>
-          <NavLink
-            to="/shop"
-            style={({ isActive }) => ({
-              padding: '8px 16px',
-              textDecoration: 'none',
-              backgroundColor: isActive ? '#0d6efd' : 'transparent',
-              color: isActive ? 'white' : '#0d6efd',
-              borderRadius: '4px',
-              fontWeight: '500',
-            })}
-          >
-            Shop
-          </NavLink>
-        </nav>
+    <main>
+      <h1 className="ex">Exercise 1</h1>
+      <BrowserRouter>
+        <div className="container mt-4">
+          {/* Simple navigation bar with pills */}
+          <nav className="nav nav-pills mb-4">
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                isActive ? "nav-link active" : "nav-link"
+              }
+              end
+              style={{ padding: '16px', fontSize: '2rem', fontWeight: 'bold' }}
+            >
+              Home
+            </NavLink>
+            <NavLink
+              to="/profile"
+              className={({ isActive }) =>
+                isActive ? "nav-link active" : "nav-link"
+              }
+              style={{ padding: '16px', fontSize: '2rem', fontWeight: 'bold' }}
+            >
+              Profile
+            </NavLink>
+            <NavLink
+              to="/shop"
+              className={({ isActive }) =>
+                isActive ? "nav-link active" : "nav-link"
+              }
+              style={{ padding: '16px', fontSize: '2rem', fontWeight: 'bold' }}
+            >
+              Shop
+            </NavLink>
+          </nav>
 
-        {/* Routes wrapped with ErrorBoundary */}
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ErrorBoundary>
-                <HomeScreen />
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <ErrorBoundary>
-                <ProfileScreen />
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path="/shop"
-            element={
-              <ErrorBoundary>
-                <ShopScreen />
-              </ErrorBoundary>
-            }
-          />
-        </Routes>
-      </div>
-    </BrowserRouter>
-  )
+          {/* Routes with ErrorBoundary */}
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <ErrorBoundary>
+                  <HomeScreen />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ErrorBoundary>
+                  <ProfileScreen />
+                </ErrorBoundary>
+              }
+            />
+            <Route
+              path="/shop"
+              element={
+                <ErrorBoundary>
+                  <ShopScreen />
+                </ErrorBoundary>
+              }
+            />
+          </Routes>
+        </div>
+      </BrowserRouter>
+      <br />
+      <hr />
+      <br />
+      <h1 className="ex">Exercise 2</h1>
+      {posts.map((post) => (
+        <PostList title={post.title} content={post.content} />
+      ))}
+      <br />
+      <hr />
+      <br />
+      <h1 className="ex">Exercise 3</h1>
+      <b>Example1 Component</b>
+      <SocialMedias />
+      <b>Example2 Component</b>
+      <Skills />
+      <b>Example3 Component</b>
+      <Experiences />
+      <br />
+      <hr />
+      <br />
+      <h1 className="ex">Exercise 4</h1>
+      <FetchData />
+    </main>
+  );
 }
 
-export default App
+export default App;
