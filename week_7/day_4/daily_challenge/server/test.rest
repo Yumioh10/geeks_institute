@@ -1,0 +1,11 @@
+### Get request to api/hello
+GET http://localhost:5000/api/hello
+Accept: application/json
+
+### Post request to api/world
+POST http://localhost:5000/api/world
+Content-Type: application/json
+
+{
+  "message": "Hello, World!"
+}
