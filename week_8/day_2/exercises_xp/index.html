@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeScript Type Assertions Exercise</title>
+</head>
+<body>
+    <h1>TypeScript Type Assertions Demo</h1>
+    
+    <div>
+        <label for="myInput">Enter text:</label>
+        <input type="text" id="myInput" maxlength="50">
+    </div>
+    
+    <button id="myButton">Submit</button>
+    
+    <script type="module">
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Step 1: Get elements from DOM
+            const inputElement = document.getElementById('myInput') as HTMLInputElement;
+            const buttonElement = document.getElementById('myButton') as HTMLButtonElement;
+            
+            // Step 2: Use type assertions to access properties
+            inputElement.placeholder = "Type something here...";
+            inputElement.value = "Initial value set by TypeScript";
+            
+            // Step 3: Add event handlers with proper typing
+            buttonElement.addEventListener('click', () => {
+                // Without type assertion, we couldn't access .value
+                const inputValue = inputElement.value;
+                alert(`You typed: ${inputValue}`);
+            });
+            
+            // Example with type assertion in a separate function
+            function processElement(elementId: string) {
+                const element = document.getElementById(elementId);
+                
+                // Type guard using instanceof
+                if (element instanceof HTMLInputElement) {
+                    element.style.backgroundColor = "#e8f5e8";
+                    console.log("Input element processed successfully");
+                } else if (element instanceof HTMLButtonElement) {
+                    element.style.backgroundColor = "#2196f3";
+                    element.style.color = "white";
+                }
+            }
+            
+            // Call the function
+            processElement('myInput');
+            processElement('myButton');
+        });
+    </script>
+</body>
+</html>
