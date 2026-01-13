@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Recipe Book - Save and organize your favorite recipes"
+    />
+    <title>Recipe Book | TypeScript Application</title>
+  </head>
+  <body
+    class="bg-gradient-to-br from-purple-500 via-purple-600 to-indigo-700 min-h-screen font-sans"
+  >
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+      <!-- Header Section -->
+      <header class="text-center text-white mb-12 animate-fade-in">
+        <div class="inline-block mb-4">
+          <span class="text-7xl drop-shadow-2xl">📖</span>
+        </div>
+        <h1
+          class="text-5xl md:text-6xl font-extrabold mb-3 drop-shadow-lg tracking-tight"
+        >
+          Recipe Book
+        </h1>
+        <p class="text-xl md:text-2xl opacity-90 font-light">
+          Save and organize your favorite recipes
+        </p>
+        <div
+          class="mt-4 flex items-center justify-center gap-4 text-sm opacity-75"
+        >
+          <span class="flex items-center gap-1">
+            <span>💾</span>
+            <span>Auto-saves to browser</span>
+          </span>
+          <span>•</span>
+          <span class="flex items-center gap-1">
+            <span>⌨️</span>
+            <span>Press Ctrl+K to quick add</span>
+          </span>
+        </div>
+      </header>
+
+      <main class="grid grid-cols-1 gap-8">
+        <!-- Add Recipe Form Section -->
+        <section
+          class="bg-white rounded-2xl shadow-2xl p-8 transform transition-all duration-300 hover:shadow-3xl"
+        >
+          <div class="flex items-center gap-3 mb-6">
+            <span class="text-3xl">➕</span>
+            <h2 class="text-3xl font-bold text-gray-800">Add New Recipe</h2>
+          </div>
+
+          <form id="recipeEntryForm" class="space-y-6">
+            <!-- Recipe Title -->
+            <div class="transform transition-all duration-200">
+              <label
+                for="recipeTitle"
+                class="text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"
+              >
+                <span>🏷️</span>
+                <span>Recipe Title</span>
+              </label>
+              <input
+                type="text"
+                id="recipeTitle"
+                placeholder="e.g., Grandma's Chocolate Chip Cookies"
+                required
+                class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 text-lg placeholder-gray-400"
+              />
+            </div>
+
+            <!-- Ingredients -->
+            <div class="transform transition-all duration-200">
+              <label
+                for="ingredients"
+                class="text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"
+              >
+                <span>🥘</span>
+                <span>Ingredients</span>
+                <span class="text-xs font-normal text-gray-500 ml-2"
+                  >(one per line)</span
+                >
+              </label>
+              <textarea
+                id="ingredients"
+                placeholder="2 cups all-purpose flour&#10;1 cup granulated sugar&#10;2 large eggs&#10;1 tsp vanilla extract&#10;1 cup chocolate chips"
+                rows="6"
+                required
+                class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 resize-y text-lg placeholder-gray-400 font-mono"
+              ></textarea>
+            </div>
+
+            <!-- Instructions -->
+            <div class="transform transition-all duration-200">
+              <label
+                for="instructions"
+                class="text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"
+              >
+                <span>📝</span>
+                <span>Cooking Instructions</span>
+              </label>
+              <textarea
+                id="instructions"
+                placeholder="1. Preheat oven to 350°F (175°C)&#10;2. Mix flour and sugar in a large bowl&#10;3. Add eggs and vanilla, mix well&#10;4. Fold in chocolate chips&#10;5. Bake for 12-15 minutes until golden brown"
+                rows="6"
+                required
+                class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 resize-y text-lg placeholder-gray-400"
+              ></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-4 rounded-xl transition-all duration-200 transform hover:scale-[1.02] hover:shadow-2xl flex items-center justify-center gap-3 text-lg"
+            >
+              <span class="text-2xl">➕</span>
+              <span>Add Recipe to Collection</span>
+            </button>
+          </form>
+        </section>
+
+        <!-- Recipes Display Section -->
+        <section
+          class="bg-white rounded-2xl shadow-2xl p-8 transform transition-all duration-300"
+        >
+          <!-- Section Header -->
+          <div
+            class="flex justify-between items-center mb-6 flex-wrap gap-4 pb-4 border-b-2 border-gray-200"
+          >
+            <div class="flex items-center gap-3">
+              <span class="text-3xl">📚</span>
+              <h2 class="text-3xl font-bold text-gray-800">My Recipes</h2>
+            </div>
+            <button
+              id="clearRecipesButton"
+              class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl flex items-center gap-2"
+            >
+              <span class="text-lg">🗑️</span>
+              <span>Clear All</span>
+            </button>
+          </div>
+
+          <!-- Recipe Container -->
+          <div id="recipeContainer" class="space-y-4"></div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="mt-12 text-center text-white opacity-75 text-sm">
+        <p class="mb-2">Built with TypeScript, Vite & Tailwind CSS</p>
+        <p>💜 Made with love for recipe enthusiasts</p>
+      </footer>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

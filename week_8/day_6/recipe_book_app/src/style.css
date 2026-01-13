@@ -1,0 +1,243 @@
+/* src/style.css */
+
+/* Import Tailwind CSS */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Custom Layer Utilities */
+@layer utilities {
+  /* Custom fade-in animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  /* Custom bounce animation for empty state icon */
+  @keyframes gentleBounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-gentle-bounce {
+    animation: gentleBounce 2s ease-in-out infinite;
+  }
+
+  /* Custom shadow for extra depth */
+  .shadow-3xl {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+}
+
+/* Custom Components */
+@layer components {
+  /* Recipe card hover effect */
+  .recipe-card {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  /* Custom scrollbar for textareas */
+  textarea::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  textarea::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+
+  textarea::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #a855f7, #6366f1);
+    border-radius: 10px;
+  }
+
+  textarea::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #9333ea, #4f46e5);
+  }
+
+  /* Input focus glow effect */
+  input:focus,
+  textarea:focus {
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+  }
+
+  /* Button click effect */
+  button:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  /* Smooth transitions for all interactive elements */
+  button,
+  input,
+  textarea {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+  }
+}
+
+/* Base Styles */
+@layer base {
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Better font rendering */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Remove default button outline */
+  button:focus {
+    outline: none;
+  }
+
+  /* Selection color */
+  ::selection {
+    background-color: rgba(168, 85, 247, 0.3);
+    color: inherit;
+  }
+
+  /* Custom focus ring color */
+  *:focus-visible {
+    outline: 2px solid #a855f7;
+    outline-offset: 2px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background: white;
+  }
+
+  .recipe-card {
+    page-break-inside: avoid;
+    border: 1px solid #ddd;
+    margin-bottom: 1rem;
+  }
+
+  button {
+    display: none;
+  }
+}
+
+/* Dark mode support (optional - uncomment to enable) */
+/*
+@media (prefers-color-scheme: dark) {
+  body {
+    @apply bg-gray-900;
+  }
+  
+  .bg-white {
+    @apply bg-gray-800 text-white;
+  }
+  
+  .text-gray-800 {
+    @apply text-gray-100;
+  }
+  
+  .text-gray-700 {
+    @apply text-gray-300;
+  }
+  
+  .border-gray-300 {
+    @apply border-gray-600;
+  }
+}
+*/
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 640px) {
+  /* Adjust font sizes for mobile */
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  /* Larger touch targets on mobile */
+  button {
+    min-height: 44px;
+  }
+
+  /* Adjust spacing on mobile */
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Loading state (can be used for future enhancements) */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading {
+  animation: spin 1s linear infinite;
+}
+
+/* Tooltip styles (for future enhancements) */
+.tooltip {
+  position: relative;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5rem;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  font-size: 0.875rem;
+  border-radius: 0.375rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.tooltip:hover::after {
+  opacity: 1;
+}
